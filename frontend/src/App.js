@@ -1,10 +1,13 @@
 import React, { Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 // Layout components
 import Layout from './components/Layout/Layout';
 import Loading from './components/UI/Loading';
+
+// Auth Context
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Page components (lazy loaded)
 const Home = React.lazy(() => import('./pages/Home'));
@@ -20,7 +23,22 @@ const TeamCreate = React.lazy(() => import('./pages/Teams/TeamCreate'));
 const Profile = React.lazy(() => import('./pages/Profile/Profile'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
-function App() {
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  
+  if (loading) {
+    return <Loading />;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
+
+function AppRoutes() {
   const { t } = useTranslation();
 
   return (
@@ -33,20 +51,84 @@ function App() {
           <Route path="/register" element={<Register />} />
           
           {/* Protected routes */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/tournaments" element={<TournamentsList />} />
-          <Route path="/tournaments/create" element={<TournamentCreate />} />
-          <Route path="/tournaments/:id" element={<TournamentDetails />} />
-          <Route path="/teams" element={<TeamsList />} />
-          <Route path="/teams/create" element={<TeamCreate />} />
-          <Route path="/teams/:id" element={<TeamDetails />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments" 
+            element={
+              <ProtectedRoute>
+                <TournamentsList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/create" 
+            element={
+              <ProtectedRoute>
+                <TournamentCreate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/:id" 
+            element={
+              <ProtectedRoute>
+                <TournamentDetails />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/teams" 
+            element={
+              <ProtectedRoute>
+                <TeamsList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/teams/create" 
+            element={
+              <ProtectedRoute>
+                <TeamCreate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/teams/:id" 
+            element={
+              <ProtectedRoute>
+                <TeamDetails />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
           
           {/* Not found route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Layout>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 

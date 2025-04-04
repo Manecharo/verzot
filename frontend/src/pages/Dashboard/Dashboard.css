@@ -1,0 +1,202 @@
+.dashboard-container {
+  padding: 2rem 1rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: #718096;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.dashboard-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 2rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Matches List */
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.match-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+.match-item:hover {
+  background-color: #edf2f7;
+}
+
+.match-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.match-tournament {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.match-datetime {
+  color: #718096;
+}
+
+.match-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.match-teams .team {
+  font-weight: 600;
+  color: #2d3748;
+  flex: 1;
+}
+
+.match-teams .team:last-child {
+  text-align: right;
+}
+
+.match-teams .vs {
+  margin: 0 0.75rem;
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+/* Tournaments List */
+.tournaments-list, .teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tournament-item, .team-item {
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.tournament-item:hover, .team-item:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tournament-name, .team-name {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.tournament-info, .team-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.tournament-teams, .team-members, .team-tournaments {
+  color: #718096;
+}
+
+.tournament-status {
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+}
+
+.status-active {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+.status-registration {
+  background-color: #bee3f8;
+  color: #2c5282;
+}
+
+.status-completed {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.status-upcoming {
+  background-color: #feebc8;
+  color: #c05621;
+}
+
+/* Empty States */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #718096;
+}
+
+.empty-state p {
+  margin-bottom: 1rem;
+}
+
+.create-button {
+  margin-top: 0.5rem;
+}
+
+.card-link {
+  display: inline-block;
+  color: #3182ce;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}

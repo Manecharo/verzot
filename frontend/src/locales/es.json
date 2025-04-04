@@ -4,11 +4,118 @@
   "login": "Iniciar Sesión",
   "register": "Registrarse",
   "home": "Inicio",
-  "dashboard": "Panel",
+  "dashboard": "Panel de Control",
   "tournaments": "Torneos",
   "teams": "Equipos",
   "profile": "Perfil",
   "logout": "Cerrar Sesión",
   "pageNotFound": "Página No Encontrada",
-  "goHome": "Ir a la Página Principal"
+  "goHome": "Ir a la Página Principal",
+  
+  "common": {
+    "loading": "Cargando...",
+    "teams": "equipos",
+    "members": "miembros",
+    "tournaments": "torneos"
+  },
+  
+  "auth": {
+    "login_title": "Bienvenido de nuevo",
+    "login_subtitle": "Inicia sesión para continuar",
+    "register_title": "Crear una cuenta",
+    "register_subtitle": "Únete a Verzot para comenzar a organizar torneos",
+    "email": "Correo electrónico",
+    "email_placeholder": "Introduce tu correo electrónico",
+    "email_required": "El correo electrónico es obligatorio",
+    "email_invalid": "Introduce un correo electrónico válido",
+    "password": "Contraseña",
+    "password_placeholder": "Introduce tu contraseña",
+    "password_required": "La contraseña es obligatoria",
+    "password_length": "La contraseña debe tener al menos 8 caracteres",
+    "password_weak": "La contraseña es demasiado débil",
+    "name": "Nombre completo",
+    "name_placeholder": "Introduce tu nombre completo",
+    "name_required": "El nombre es obligatorio",
+    "confirm_password": "Confirmar contraseña",
+    "confirm_password_placeholder": "Confirma tu contraseña",
+    "confirm_password_required": "Por favor, confirma tu contraseña",
+    "passwords_not_match": "Las contraseñas no coinciden",
+    "login_button": "Iniciar Sesión",
+    "register_button": "Crear Cuenta",
+    "no_account": "¿No tienes una cuenta?",
+    "have_account": "¿Ya tienes una cuenta?",
+    "register_link": "Regístrate ahora",
+    "login_link": "Iniciar sesión"
+  },
+  
+  "dashboard": {
+    "welcome": "Bienvenido, {{name}}",
+    "user": "Usuario",
+    "subtitle": "Gestiona tus torneos, equipos y partidos en un solo lugar",
+    "quick_actions": "Acciones Rápidas",
+    "create_tournament": "Crear Torneo",
+    "create_team": "Crear Equipo",
+    "browse_tournaments": "Explorar Torneos",
+    "upcoming_matches": "Próximos Partidos",
+    "my_tournaments": "Mis Torneos",
+    "my_teams": "Mis Equipos",
+    "see_all_matches": "Ver todos los partidos",
+    "see_all_tournaments": "Ver todos los torneos",
+    "see_all_teams": "Ver todos los equipos",
+    "no_upcoming_matches": "No tienes próximos partidos",
+    "no_tournaments": "Aún no has creado ningún torneo",
+    "no_teams": "Aún no has creado ningún equipo",
+    "create_first_tournament": "Crea tu primer torneo",
+    "create_first_team": "Crea tu primer equipo"
+  },
+  
+  "tournament": {
+    "status": {
+      "active": "Activo",
+      "registration": "Registro",
+      "completed": "Completado",
+      "upcoming": "Próximo"
+    },
+    "filter": {
+      "all": "Todos los Torneos"
+    },
+    "location": "Ubicación",
+    "format": "Formato",
+    "dates": "Fechas",
+    "teams": "Equipos",
+    "organizer": "Organizador",
+    "no_tournaments_found": "No se encontraron torneos",
+    "show_all_tournaments": "Mostrar todos los torneos",
+    "edit_tournament": "Editar Torneo",
+    "delete_tournament": "Eliminar Torneo",
+    "confirm_delete": "¿Estás seguro que deseas eliminar este torneo?",
+    "view_teams": "Ver Equipos",
+    "view_matches": "Ver Partidos",
+    "view_standings": "Ver Clasificación",
+    "overview": "Información General",
+    "matches": "Partidos",
+    "standings": "Clasificación",
+    "team_registration": "Registro de Equipos"
+  },
+  
+  "team": {
+    "location": "Ubicación",
+    "captain": "Capitán",
+    "view_details": "Ver Detalles",
+    "edit_team": "Editar Equipo",
+    "delete_team": "Eliminar Equipo",
+    "confirm_delete": "¿Estás seguro que deseas eliminar este equipo?",
+    "members": "Miembros",
+    "tournaments": "Torneos",
+    "overview": "Información General",
+    "join_tournaments": "Unirse a Torneos",
+    "manage_members": "Gestionar Miembros"
+  },
+  
+  "teams": {
+    "search_placeholder": "Buscar equipos por nombre o ubicación",
+    "no_teams_found": "No se encontraron equipos",
+    "no_teams_found_search": "No se encontraron equipos con tu búsqueda",
+    "clear_search": "Limpiar búsqueda"
+  }
 } 

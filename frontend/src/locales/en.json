@@ -10,5 +10,112 @@
   "profile": "Profile",
   "logout": "Logout",
   "pageNotFound": "Page Not Found",
-  "goHome": "Go to Homepage"
+  "goHome": "Go to Homepage",
+  
+  "common": {
+    "loading": "Loading...",
+    "teams": "teams",
+    "members": "members",
+    "tournaments": "tournaments"
+  },
+  
+  "auth": {
+    "login_title": "Welcome back",
+    "login_subtitle": "Sign in to your account to continue",
+    "register_title": "Create an account",
+    "register_subtitle": "Join Verzot to start organizing tournaments",
+    "email": "Email",
+    "email_placeholder": "Enter your email",
+    "email_required": "Email is required",
+    "email_invalid": "Please enter a valid email",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "password_required": "Password is required",
+    "password_length": "Password must be at least 8 characters",
+    "password_weak": "Password is too weak",
+    "name": "Full Name",
+    "name_placeholder": "Enter your full name",
+    "name_required": "Name is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Confirm your password",
+    "confirm_password_required": "Please confirm your password",
+    "passwords_not_match": "Passwords do not match",
+    "login_button": "Sign In",
+    "register_button": "Create Account",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "register_link": "Register now",
+    "login_link": "Login"
+  },
+  
+  "dashboard": {
+    "welcome": "Welcome, {{name}}",
+    "user": "User",
+    "subtitle": "Manage your tournaments, teams, and matches all in one place",
+    "quick_actions": "Quick Actions",
+    "create_tournament": "Create Tournament",
+    "create_team": "Create Team",
+    "browse_tournaments": "Browse Tournaments",
+    "upcoming_matches": "Upcoming Matches",
+    "my_tournaments": "My Tournaments",
+    "my_teams": "My Teams",
+    "see_all_matches": "See all matches",
+    "see_all_tournaments": "See all tournaments",
+    "see_all_teams": "See all teams",
+    "no_upcoming_matches": "You have no upcoming matches",
+    "no_tournaments": "You haven't created any tournaments yet",
+    "no_teams": "You haven't created any teams yet",
+    "create_first_tournament": "Create your first tournament",
+    "create_first_team": "Create your first team"
+  },
+  
+  "tournament": {
+    "status": {
+      "active": "Active",
+      "registration": "Registration",
+      "completed": "Completed",
+      "upcoming": "Upcoming"
+    },
+    "filter": {
+      "all": "All Tournaments"
+    },
+    "location": "Location",
+    "format": "Format",
+    "dates": "Dates",
+    "teams": "Teams",
+    "organizer": "Organizer",
+    "no_tournaments_found": "No tournaments found",
+    "show_all_tournaments": "Show all tournaments",
+    "edit_tournament": "Edit Tournament",
+    "delete_tournament": "Delete Tournament",
+    "confirm_delete": "Are you sure you want to delete this tournament?",
+    "view_teams": "View Teams",
+    "view_matches": "View Matches",
+    "view_standings": "View Standings",
+    "overview": "Overview",
+    "matches": "Matches",
+    "standings": "Standings",
+    "team_registration": "Team Registration"
+  },
+  
+  "team": {
+    "location": "Location",
+    "captain": "Captain",
+    "view_details": "View Details",
+    "edit_team": "Edit Team",
+    "delete_team": "Delete Team",
+    "confirm_delete": "Are you sure you want to delete this team?",
+    "members": "Members",
+    "tournaments": "Tournaments",
+    "overview": "Overview",
+    "join_tournaments": "Join Tournaments",
+    "manage_members": "Manage Members"
+  },
+  
+  "teams": {
+    "search_placeholder": "Search teams by name or location",
+    "no_teams_found": "No teams found",
+    "no_teams_found_search": "No teams found matching your search",
+    "clear_search": "Clear search"
+  }
 } 
