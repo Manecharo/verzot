@@ -256,7 +256,7 @@ Key Deliverables:
 - **IPv6 Connectivity**: Discovered that Supabase direct connection requires IPv6 support, which was causing connection issues. Solution was to switch to Supabase's connection pooler which supports IPv4.
 - **Connection String Format**: Refined the connection string format to use the correct username format for Supabase pooler connections (`postgres.{project_ref}`).
 - **DNS Resolution**: Identified and addressed DNS resolution issues for Supabase hostnames.
-- **Deployment Build Issue**: Fixed build failure on Vercel caused by missing image file references in CSS. Initial solution was to add images to the public directory and update CSS paths, but further refinement was needed to use `%PUBLIC_URL%` prefix for proper path resolution in the production build.
+- **Deployment Build Issue**: Fixed build failure on Vercel caused by missing image file references in CSS. After several approaches, the final solution was to refactor the Home component to use imported images with React inline styles instead of CSS background URLs, which ensures proper bundling and path resolution in production builds.
 
 ## Next Steps
 
