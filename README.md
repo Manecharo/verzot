@@ -23,4 +23,30 @@ Verzot is a user-friendly, global web-based platform designed to simplify the or
 *Instructions for setup coming soon*
 
 ## License
-*License information coming soon* 
+*License information coming soon*
+
+## Structure
+
+- `/backend`: Node.js/Express backend server
+- `/frontend`: React frontend application
+- `/tests`: Contains test files (e.g., PowerShell scripts)
+
+## Setup
+
+Refer to the README files within the `backend` and `frontend` directories for specific setup instructions.
+
+## Database
+
+The backend uses PostgreSQL, configured via `./backend/.env`.
+
+## Running Locally
+
+1.  Start the backend server (see `backend/README.md`).
+2.  Start the frontend development server (see `frontend/README.md`).
+
+## Deployment
+
+- Backend: TBD
+- Frontend: Deployed via Vercel.
+
+<!-- Trigger Vercel build --> 
