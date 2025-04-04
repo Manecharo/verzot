@@ -5,10 +5,8 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(rgba(26, 26, 29, 0.7), rgba(26, 26, 29, 0.7)), url('%PUBLIC_URL%/images/pexels-mikkel-kvist-2722911-15949232.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  /* We'll handle background image via inline style in the React component instead */
+  background-color: #1a1a1d; /* Fallback color */
   color: #ffffff;
   padding: 6rem 2rem;
   text-align: center;
@@ -17,11 +15,25 @@
   justify-content: center;
   min-height: 70vh; /* Adjust height as needed */
   box-shadow: inset 0 -5px 15px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(26, 26, 29, 0.7), rgba(26, 26, 29, 0.7));
+  z-index: 1;
 }
 
 .hero-content {
   max-width: 800px;
   animation: fadeInScaleUp 0.8s ease-out forwards;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-headline {
@@ -97,18 +109,18 @@
   overflow: hidden;
 }
 
-.features-section::before {
-  content: "";
+.features-section-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('%PUBLIC_URL%/images/pexels-maumascaro-1311619.jpg');
-  background-size: cover;
-  background-position: center;
   opacity: 0.05;
   z-index: 0;
+}
+
+.features-section::before {
+  display: none; /* Remove this pseudo-element as we're using a real div now */
 }
 
 .section-title {
@@ -158,18 +170,35 @@
 
 /* Call to Action Section */
 .cta-section {
-    background: linear-gradient(rgba(26, 26, 29, 0.85), rgba(26, 26, 29, 0.85)), url('%PUBLIC_URL%/images/pexels-myatezhny39-4038906.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* We'll handle background image via inline style in the React component */
+    background-color: #1a1a1d; /* Fallback color */
     color: #f5f5f5;
     padding: 4rem 2rem;
     text-align: center;
+    position: relative;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(26, 26, 29, 0.85), rgba(26, 26, 29, 0.85));
+    z-index: 1;
 }
 
 .cta-section h2 {
     font-size: 2.2rem;
     margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.cta-section .cta-button {
+    position: relative;
+    z-index: 2;
 }
 
 /* Animations */
