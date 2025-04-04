@@ -208,6 +208,8 @@ Key Deliverables:
    - Basic Layout, Header, Footer components implemented and styled
    - Loading component implemented and styled
    - Home page implemented with initial structure and styling
+   - Enhanced Home page with real background images for better visual appeal
+   - Fixed deployment build issue related to image references
 
 ### In Progress (Planned for next sprint)
 
@@ -254,6 +256,7 @@ Key Deliverables:
 - **IPv6 Connectivity**: Discovered that Supabase direct connection requires IPv6 support, which was causing connection issues. Solution was to switch to Supabase's connection pooler which supports IPv4.
 - **Connection String Format**: Refined the connection string format to use the correct username format for Supabase pooler connections (`postgres.{project_ref}`).
 - **DNS Resolution**: Identified and addressed DNS resolution issues for Supabase hostnames.
+- **Deployment Build Issue**: Fixed build failure on Vercel caused by missing image file references in CSS. Solution was to add proper images to the public directory and update CSS paths accordingly.
 
 ## Next Steps
 
