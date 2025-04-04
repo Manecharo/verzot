@@ -3,10 +3,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure footer is pushed to bottom */
+  background-color: var(--dark-bg-primary);
+  color: var(--text-primary);
 }
 
 .main-content {
   flex-grow: 1; /* Allows main content to expand and push footer down */
   padding: 2rem; /* Example padding */
+  background-color: var(--dark-bg-primary);
   /* Add background, etc. here */
 } 
