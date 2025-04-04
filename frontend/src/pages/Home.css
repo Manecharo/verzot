@@ -5,7 +5,7 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(rgba(26, 26, 29, 0.7), rgba(26, 26, 29, 0.7)), url('/images/pexels-mikkel-kvist-2722911-15949232.jpg');
+  background: linear-gradient(rgba(26, 26, 29, 0.7), rgba(26, 26, 29, 0.7)), url('%PUBLIC_URL%/images/pexels-mikkel-kvist-2722911-15949232.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -104,7 +104,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('/images/pexels-maumascaro-1311619.jpg');
+  background: url('%PUBLIC_URL%/images/pexels-maumascaro-1311619.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.05;
@@ -158,7 +158,7 @@
 
 /* Call to Action Section */
 .cta-section {
-    background: linear-gradient(rgba(26, 26, 29, 0.85), rgba(26, 26, 29, 0.85)), url('/images/pexels-myatezhny39-4038906.jpg');
+    background: linear-gradient(rgba(26, 26, 29, 0.85), rgba(26, 26, 29, 0.85)), url('%PUBLIC_URL%/images/pexels-myatezhny39-4038906.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
