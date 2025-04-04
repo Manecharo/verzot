@@ -1,0 +1,12 @@
+/* Basic Layout Styling */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure footer is pushed to bottom */
+}
+
+.main-content {
+  flex-grow: 1; /* Allows main content to expand and push footer down */
+  padding: 2rem; /* Example padding */
+  /* Add background, etc. here */
+} 

@@ -1,0 +1,56 @@
+/* Basic Footer Styling */
+.app-footer {
+  background-color: #0b0c10; /* Very dark background */
+  color: #66fcf1; /* Contrasting cyan/aqua accent */
+  padding: 2rem;
+  margin-top: auto; /* Pushes footer down if content is short */
+  border-top: 1px solid #1f2833; /* Subtle separator */
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-link {
+  color: #c5c6c7; /* Light grey links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #66fcf1; /* Accent color on hover */
+}
+
+.footer-copyright {
+  color: #c5c6c7;
+  font-size: 0.9rem;
+}
+
+.footer-social {
+  /* Styles for social icons */
+  display: flex;
+  gap: 1rem;
+}
+
+/* Add styles for social icons if you add them */
+.social-icon {
+  color: #c5c6c7;
+  font-size: 1.2rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-icon:hover {
+  color: #66fcf1;
+  transform: scale(1.1);
+} 
