@@ -1,0 +1,14 @@
+{
+  "welcome": "Bienvenido a Verzot",
+  "description": "El mejor lugar para gestionar tus torneos de fútbol amateur.",
+  "login": "Iniciar Sesión",
+  "register": "Registrarse",
+  "home": "Inicio",
+  "dashboard": "Panel",
+  "tournaments": "Torneos",
+  "teams": "Equipos",
+  "profile": "Perfil",
+  "logout": "Cerrar Sesión",
+  "pageNotFound": "Página No Encontrada",
+  "goHome": "Ir a la Página Principal"
+} 

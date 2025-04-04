@@ -1,0 +1,14 @@
+{
+  "welcome": "Welcome to Verzot",
+  "description": "The best place to manage your amateur soccer tournaments.",
+  "login": "Login",
+  "register": "Register",
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "tournaments": "Tournaments",
+  "teams": "Teams",
+  "profile": "Profile",
+  "logout": "Logout",
+  "pageNotFound": "Page Not Found",
+  "goHome": "Go to Homepage"
+} 
