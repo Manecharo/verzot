@@ -1,6 +1,14 @@
 import api from './api';
 import supabase from './supabaseClient';
 
+// Check if we're using Supabase 
+const USE_SUPABASE = process.env.REACT_APP_USE_SUPABASE === 'true';
+
+// Log configuration for debugging
+console.log('Auth Service Configuration:');
+console.log('- Using Supabase:', USE_SUPABASE);
+console.log('- API URL:', process.env.REACT_APP_API_URL);
+
 /**
  * Authentication service for handling user authentication operations
  */
@@ -13,8 +21,8 @@ const authService = {
   register: async (userData) => {
     try {
       // First try using Supabase directly
-      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
-        console.log('Using Supabase for registration');
+      if (supabase && USE_SUPABASE) {
+        console.log('Registration: Using Supabase Auth API');
         const { data, error } = await supabase.auth.signUp({
           email: userData.email,
           password: userData.password,
@@ -90,8 +98,8 @@ const authService = {
   login: async (email, password) => {
     try {
       // First try using Supabase directly
-      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
-        console.log('Using Supabase for login');
+      if (supabase && USE_SUPABASE) {
+        console.log('Login: Using Supabase Auth API');
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
@@ -154,7 +162,7 @@ const authService = {
    */
   logout: async () => {
     // Try to sign out from Supabase
-    if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+    if (supabase && USE_SUPABASE) {
       await supabase.auth.signOut();
     }
     
@@ -169,7 +177,7 @@ const authService = {
   getProfile: async () => {
     try {
       // Try to get user from Supabase
-      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+      if (supabase && USE_SUPABASE) {
         const { data, error } = await supabase.auth.getUser();
         if (error) throw error;
         
@@ -212,7 +220,7 @@ const authService = {
   updateProfile: async (profileData) => {
     try {
       // Try to update user in Supabase
-      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+      if (supabase && USE_SUPABASE) {
         const { data, error } = await supabase.auth.updateUser({
           data: {
             first_name: profileData.firstName,

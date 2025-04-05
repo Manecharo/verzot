@@ -41,6 +41,7 @@
   ],
   "env": {
     "REACT_APP_SUPABASE_URL": "https://iqnkstwzzymqyahlztdx.supabase.co",
+    "REACT_APP_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlxbmtzdHd6enltcXlhaGx6dGR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2NTU0NTQsImV4cCI6MjA1OTIzMTQ1NH0.XLSjt2xm5spEHGASQzYo1_tMqMiSbsrc6THTxwjXeQ4",
     "REACT_APP_USE_SUPABASE": "true",
     "CI": "false"
   }
