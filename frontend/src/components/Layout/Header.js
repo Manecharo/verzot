@@ -6,7 +6,7 @@ import './Header.css';
 
 const Header = () => {
   const { t } = useTranslation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

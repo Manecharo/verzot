@@ -39,8 +39,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppRoutes() {
-  const { t } = useTranslation();
-
   return (
     <Layout>
       <Suspense fallback={<Loading />}>
