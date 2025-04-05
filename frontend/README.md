@@ -2,7 +2,28 @@
 
 Amateur soccer tournament management platform.
 
+## Supabase Integration
+
+This project now uses Supabase for authentication. You need to set up the following:
+
+1. Create a Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project
+3. Get your project URL and anon key from Project Settings > API
+4. Set these values in your environment variables:
+   - `REACT_APP_SUPABASE_URL`
+   - `REACT_APP_SUPABASE_ANON_KEY`
+   - `REACT_APP_USE_SUPABASE=true`
+
 ## Deployment to Vercel
+
+### Environment Variables in Vercel
+
+When deploying to Vercel, set the following environment variables in your project settings:
+
+- `REACT_APP_SUPABASE_URL`: Your Supabase project URL
+- `REACT_APP_SUPABASE_ANON_KEY`: Your Supabase anon key
+- `REACT_APP_USE_SUPABASE`: Set to "true"
+- `CI`: Set to "false" to prevent warnings from breaking the build
 
 ### Automatic Deployment (Recommended)
 
@@ -33,14 +54,6 @@ Amateur soccer tournament management platform.
 
 4. Follow the interactive prompts
 
-## Environment Variables
-
-Set the following environment variables in your Vercel project settings:
-
-- `REACT_APP_API_URL`: URL to your backend API
-- `REACT_APP_SOCKET_URL`: URL for Socket.io connections
-- `CI`: Set to `false` to prevent warnings from breaking the build
-
 ## Testing the Deployment
 
 After deploying, test the following features:
@@ -52,8 +65,8 @@ After deploying, test the following features:
 
 ## Troubleshooting
 
-If you encounter deployment issues:
+If you encounter issues with authentication:
 
-1. Check the Vercel build logs
-2. Ensure all environment variables are set correctly
-3. Verify your package.json scripts are configured properly 
+1. Check the browser console for errors
+2. Verify that your Supabase environment variables are correctly set
+3. Make sure you've entered the correct Supabase URL and anon key 

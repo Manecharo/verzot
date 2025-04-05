@@ -38,5 +38,10 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "REACT_APP_SUPABASE_URL": "https://iqnkstwzzymqyahlztdx.supabase.co",
+    "REACT_APP_USE_SUPABASE": "true",
+    "CI": "false"
+  }
 } 

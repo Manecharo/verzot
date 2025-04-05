@@ -1,4 +1,5 @@
 import api from './api';
+import supabase from './supabaseClient';
 
 /**
  * Authentication service for handling user authentication operations
@@ -11,6 +12,51 @@ const authService = {
    */
   register: async (userData) => {
     try {
+      // First try using Supabase directly
+      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+        console.log('Using Supabase for registration');
+        const { data, error } = await supabase.auth.signUp({
+          email: userData.email,
+          password: userData.password,
+          options: {
+            data: {
+              first_name: userData.firstName,
+              last_name: userData.lastName,
+              preferred_language: userData.preferredLanguage,
+              birth_date: userData.birthDate
+            }
+          }
+        });
+        
+        if (error) throw new Error(error.message);
+        
+        if (data && data.user) {
+          localStorage.setItem('authToken', data.session?.access_token || '');
+          localStorage.setItem('userData', JSON.stringify({
+            id: data.user.id,
+            email: data.user.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            createdAt: data.user.created_at
+          }));
+          
+          return {
+            status: 'success',
+            data: {
+              user: {
+                id: data.user.id,
+                email: data.user.email,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                createdAt: data.user.created_at
+              },
+              token: data.session?.access_token
+            }
+          };
+        }
+      }
+      
+      // Fallback to API if Supabase fails or is not enabled
       const response = await api.post('/auth/register', userData);
       if (response.data.data && response.data.data.token) {
         localStorage.setItem('authToken', response.data.data.token);
@@ -43,6 +89,43 @@ const authService = {
    */
   login: async (email, password) => {
     try {
+      // First try using Supabase directly
+      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+        console.log('Using Supabase for login');
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (error) throw new Error(error.message);
+        
+        if (data && data.user) {
+          localStorage.setItem('authToken', data.session?.access_token || '');
+          localStorage.setItem('userData', JSON.stringify({
+            id: data.user.id,
+            email: data.user.email,
+            firstName: data.user.user_metadata?.first_name || '',
+            lastName: data.user.user_metadata?.last_name || '',
+            createdAt: data.user.created_at
+          }));
+          
+          return {
+            status: 'success',
+            data: {
+              user: {
+                id: data.user.id,
+                email: data.user.email,
+                firstName: data.user.user_metadata?.first_name || '',
+                lastName: data.user.user_metadata?.last_name || '',
+                createdAt: data.user.created_at
+              },
+              token: data.session?.access_token
+            }
+          };
+        }
+      }
+      
+      // Fallback to API if Supabase fails or is not enabled
       const response = await api.post('/auth/login', { email, password });
       if (response.data.data && response.data.data.token) {
         localStorage.setItem('authToken', response.data.data.token);
@@ -69,7 +152,12 @@ const authService = {
   /**
    * Logout a user
    */
-  logout: () => {
+  logout: async () => {
+    // Try to sign out from Supabase
+    if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+      await supabase.auth.signOut();
+    }
+    
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
   },
@@ -80,6 +168,28 @@ const authService = {
    */
   getProfile: async () => {
     try {
+      // Try to get user from Supabase
+      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        
+        if (data && data.user) {
+          return {
+            status: 'success',
+            data: {
+              user: {
+                id: data.user.id,
+                email: data.user.email,
+                firstName: data.user.user_metadata?.first_name || '',
+                lastName: data.user.user_metadata?.last_name || '',
+                createdAt: data.user.created_at
+              }
+            }
+          };
+        }
+      }
+      
+      // Fallback to API
       const response = await api.get('/auth/profile');
       return response.data;
     } catch (error) {
@@ -89,7 +199,7 @@ const authService = {
         const errorMessage = errorData.message || 'Failed to fetch profile';
         throw new Error(errorMessage);
       } else {
-        throw new Error('Network error or server unavailable');
+        throw new Error(error.message || 'Network error or server unavailable');
       }
     }
   },
@@ -101,6 +211,39 @@ const authService = {
    */
   updateProfile: async (profileData) => {
     try {
+      // Try to update user in Supabase
+      if (supabase && process.env.REACT_APP_USE_SUPABASE === 'true') {
+        const { data, error } = await supabase.auth.updateUser({
+          data: {
+            first_name: profileData.firstName,
+            last_name: profileData.lastName,
+            // Include other profile data as needed
+          }
+        });
+        
+        if (error) throw error;
+        
+        if (data && data.user) {
+          const userData = {
+            id: data.user.id,
+            email: data.user.email,
+            firstName: data.user.user_metadata?.first_name || '',
+            lastName: data.user.user_metadata?.last_name || '',
+            createdAt: data.user.created_at
+          };
+          
+          localStorage.setItem('userData', JSON.stringify(userData));
+          
+          return {
+            status: 'success',
+            data: {
+              user: userData
+            }
+          };
+        }
+      }
+      
+      // Fallback to API
       const response = await api.put('/auth/profile', profileData);
       if (response.data.data && response.data.data.user) {
         localStorage.setItem('userData', JSON.stringify(response.data.data.user));
@@ -113,7 +256,7 @@ const authService = {
         const errorMessage = errorData.message || 'Failed to update profile';
         throw new Error(errorMessage);
       } else {
-        throw new Error('Network error or server unavailable');
+        throw new Error(error.message || 'Network error or server unavailable');
       }
     }
   },
