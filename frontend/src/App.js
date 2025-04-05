@@ -11,8 +11,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Page components (lazy loaded)
 const Home = React.lazy(() => import('./pages/Home'));
-const Login = React.lazy(() => import('./pages/Auth/Login'));
-const Register = React.lazy(() => import('./pages/Auth/Register'));
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
 const TournamentsList = React.lazy(() => import('./pages/Tournaments/TournamentsList'));
 const TournamentDetails = React.lazy(() => import('./pages/Tournaments/TournamentDetails'));
