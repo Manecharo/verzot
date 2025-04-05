@@ -1,63 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
+import { teamService } from '../../services';
 import './Teams.css';
 
 const TeamsList = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Mock data - in real app, this would come from API
-  const teams = [
-    { 
-      id: 1, 
-      name: 'FC Barcelona', 
-      location: 'Barcelona, Spain',
-      members: 15, 
-      tournaments: 2,
-      captain: 'Juan Garcia'
-    },
-    { 
-      id: 2, 
-      name: 'Real Madrid', 
-      location: 'Madrid, Spain',
-      members: 18, 
-      tournaments: 1,
-      captain: 'Carlos Fernandez'
-    },
-    { 
-      id: 3, 
-      name: 'Manchester City', 
-      location: 'Manchester, UK',
-      members: 16, 
-      tournaments: 3,
-      captain: 'John Smith'
-    },
-    { 
-      id: 4, 
-      name: 'Liverpool', 
-      location: 'Liverpool, UK',
-      members: 14, 
-      tournaments: 2,
-      captain: 'Peter Johnson'
-    },
-    { 
-      id: 5, 
-      name: 'PSG', 
-      location: 'Paris, France',
-      members: 17, 
-      tournaments: 1,
-      captain: 'Michel Dubois'
-    }
-  ];
+  // Fetch teams from API
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // If a search term is present, we pass it as a query param
+        // Note that this depends on the backend API supporting search
+        const filters = searchTerm ? { search: searchTerm } : {};
+        const response = await teamService.getAllTeams(filters);
+        
+        if (response.status === 'success') {
+          setTeams(response.data.teams);
+        } else {
+          setError('Failed to load teams');
+        }
+      } catch (err) {
+        console.error('Error fetching teams:', err);
+        setError(err.message || 'Failed to load teams');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Use a debounce for search to avoid too many API calls
+    const timeoutId = setTimeout(() => {
+      fetchTeams();
+    }, 500); // 500ms debounce
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
   
-  // Filter teams based on search term
-  const filteredTeams = teams.filter(team => 
-    team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    team.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtered teams are now handled by the API, but we'll keep this in case we need client-side filtering
+  const filteredTeams = teams;
   
   return (
     <div className="teams-container">
@@ -72,13 +62,24 @@ const TeamsList = () => {
         <input
           type="text"
           className="search-input"
-          placeholder={t('teams.search_placeholder')}
+          placeholder={t('teams_section.search_placeholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       
-      {filteredTeams.length > 0 ? (
+      {loading ? (
+        <div className="loading-state">
+          <p>{t('common.loading')}</p>
+        </div>
+      ) : error ? (
+        <div className="error-state">
+          <p>{error}</p>
+          <Button onClick={() => setSearchTerm('')} variant="secondary">
+            {t('teams_section.clear_search')}
+          </Button>
+        </div>
+      ) : filteredTeams.length > 0 ? (
         <div className="teams-grid">
           {filteredTeams.map(team => (
             <Link to={`/teams/${team.id}`} key={team.id} className="team-card-link">
@@ -93,15 +94,15 @@ const TeamsList = () => {
                   </div>
                   <div className="team-detail">
                     <span className="detail-label">{t('team.captain')}</span>
-                    <span className="detail-value">{team.captain}</span>
+                    <span className="detail-value">{team.captain?.name || 'Unknown'}</span>
                   </div>
                   <div className="team-stats">
                     <div className="team-stat">
-                      <span className="stat-value">{team.members}</span>
+                      <span className="stat-value">{team.memberCount || 0}</span>
                       <span className="stat-label">{t('common.members')}</span>
                     </div>
                     <div className="team-stat">
-                      <span className="stat-value">{team.tournaments}</span>
+                      <span className="stat-value">{team.tournamentCount || 0}</span>
                       <span className="stat-label">{t('common.tournaments')}</span>
                     </div>
                   </div>
@@ -117,12 +118,12 @@ const TeamsList = () => {
         <div className="empty-state">
           <p>
             {searchTerm 
-              ? t('teams.no_teams_found_search') 
-              : t('teams.no_teams_found')}
+              ? t('teams_section.no_teams_found_search') 
+              : t('teams_section.no_teams_found')}
           </p>
           {searchTerm && (
             <Button onClick={() => setSearchTerm('')} variant="secondary">
-              {t('teams.clear_search')}
+              {t('teams_section.clear_search')}
             </Button>
           )}
         </div>

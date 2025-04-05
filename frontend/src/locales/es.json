@@ -20,32 +20,47 @@
   },
   
   "auth": {
-    "login_title": "Bienvenido de nuevo",
-    "login_subtitle": "Inicia sesión para continuar",
+    "loginTitle": "Bienvenido de nuevo",
+    "registerTitle": "Crear una cuenta",
     "register_title": "Crear una cuenta",
     "register_subtitle": "Únete a Verzot para comenzar a organizar torneos",
     "email": "Correo electrónico",
-    "email_placeholder": "Introduce tu correo electrónico",
-    "email_required": "El correo electrónico es obligatorio",
-    "email_invalid": "Introduce un correo electrónico válido",
+    "emailRequired": "El correo electrónico es obligatorio",
+    "invalidEmail": "Por favor, introduce un correo electrónico válido",
     "password": "Contraseña",
-    "password_placeholder": "Introduce tu contraseña",
-    "password_required": "La contraseña es obligatoria",
-    "password_length": "La contraseña debe tener al menos 8 caracteres",
-    "password_weak": "La contraseña es demasiado débil",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordLength": "La contraseña debe tener al menos 8 caracteres",
+    "firstName": "Nombre",
+    "firstNameRequired": "El nombre es obligatorio",
+    "lastName": "Apellido",
+    "lastNameRequired": "El apellido es obligatorio",
     "name": "Nombre completo",
-    "name_placeholder": "Introduce tu nombre completo",
-    "name_required": "El nombre es obligatorio",
+    "nameRequired": "El nombre es obligatorio",
+    "confirmPassword": "Confirmar contraseña",
     "confirm_password": "Confirmar contraseña",
-    "confirm_password_placeholder": "Confirma tu contraseña",
-    "confirm_password_required": "Por favor, confirma tu contraseña",
-    "passwords_not_match": "Las contraseñas no coinciden",
-    "login_button": "Iniciar Sesión",
-    "register_button": "Crear Cuenta",
-    "no_account": "¿No tienes una cuenta?",
+    "passwordsMustMatch": "Las contraseñas no coinciden",
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "register_button": "Crear cuenta",
+    "noAccount": "¿No tienes una cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "have_account": "¿Ya tienes una cuenta?",
+    "signUp": "Regístrate ahora",
+    "login_link": "Iniciar sesión",
     "register_link": "Regístrate ahora",
-    "login_link": "Iniciar sesión"
+    "loggingIn": "Iniciando sesión...",
+    "registering": "Creando cuenta..."
+  },
+  
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel de Control",
+    "tournaments": "Torneos",
+    "teams": "Equipos",
+    "profile": "Perfil",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión"
   },
   
   "dashboard": {
@@ -112,7 +127,7 @@
     "manage_members": "Gestionar Miembros"
   },
   
-  "teams": {
+  "teams_section": {
     "search_placeholder": "Buscar equipos por nombre o ubicación",
     "no_teams_found": "No se encontraron equipos",
     "no_teams_found_search": "No se encontraron equipos con tu búsqueda",

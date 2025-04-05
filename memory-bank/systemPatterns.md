@@ -89,6 +89,58 @@ The backend follows a layered architecture:
 
 ## Frontend Architecture
 
+### Service Layer Implementation
+
+```mermaid
+flowchart TD
+    Components --> Services[Service Layer]
+    Services --> API[API Module]
+    API --> Backend[Backend API]
+    Services --> LocalStorage[Local Storage]
+    
+    subgraph "Service Modules"
+    AuthService[Auth Service]
+    TournamentService[Tournament Service]
+    TeamService[Team Service]
+    end
+    
+    Services --> Service Modules
+```
+
+The frontend implements a comprehensive service layer that:
+- Abstracts API communication from components
+- Handles authentication token management
+- Provides specialized services for different entity types
+- Manages error handling and loading states
+- Handles local storage for state persistence
+
+#### Core Service Modules
+
+1. **Base API Service**:
+   - Manages HTTP requests using Axios
+   - Configures request interceptors for authentication
+   - Handles response interceptors for error processing
+   - Manages authentication tokens automatically
+   - Provides centralized error handling
+
+2. **Auth Service**:
+   - Handles user registration and login
+   - Manages user profiles
+   - Stores and retrieves tokens from local storage
+   - Provides authentication state utilities
+
+3. **Tournament Service**:
+   - Implements CRUD operations for tournaments
+   - Manages tournament teams and registrations
+   - Handles filtering and search capabilities
+   - Processes tournament-specific operations
+
+4. **Team Service**:
+   - Implements CRUD operations for teams
+   - Manages team membership and players
+   - Provides filtering and search capabilities
+   - Handles tournament registration for teams
+
 ### Component Structure
 
 ```mermaid
@@ -148,6 +200,29 @@ The frontend follows a unidirectional data flow:
 
 ## Integration Patterns
 
+### Authentication Flow
+
+```mermaid
+flowchart TD
+    Login[Login/Register Form] --> Validation[Form Validation]
+    Validation --> AuthService[Auth Service]
+    AuthService --> APIRequest[API Request]
+    APIRequest --> JWT[JWT Token]
+    JWT --> TokenStorage[Local Storage]
+    TokenStorage --> APIInterceptor[API Interceptor]
+    APIInterceptor --> AuthHeader[Authorization Header]
+    AuthHeader --> BackendAuth[Backend Authentication]
+```
+
+The enhanced authentication flow:
+1. User enters credentials in login/register form
+2. Form validates inputs client-side
+3. Auth service sends credentials to API
+4. API returns JWT token on success
+5. Token stored in local storage
+6. API interceptor attaches token to all subsequent requests
+7. Expired tokens trigger redirect to login
+
 ### Real-Time Updates
 
 ```mermaid
@@ -164,25 +239,6 @@ Real-time updates follow this pattern:
 2. Events are broadcast to relevant clients via socket rooms
 3. Clients update their local state
 4. UI components re-render with updated data
-
-### Authentication Flow
-
-```mermaid
-flowchart TD
-    Login[Login/Register] --> TokenGeneration[JWT Generation]
-    TokenGeneration --> TokenStorage[Token Storage - Client]
-    TokenStorage --> AuthHeader[Authorization Header]
-    AuthHeader --> APIAuth[API Authentication]
-    APIAuth --> AuthMiddleware[Auth Middleware]
-    AuthMiddleware --> Resources[Protected Resources]
-```
-
-The authentication system uses JWT tokens:
-1. Login/registration generates JWT tokens
-2. Tokens are stored in the client (local storage/cookies)
-3. Requests include tokens in headers
-4. Backend middleware validates tokens
-5. User identity and roles are verified for access control
 
 ### Offline Capability Pattern
 
@@ -213,4 +269,7 @@ Offline functionality follows this approach:
 5. **Adapter Pattern**: Integration with external services (Stripe, etc.)
 6. **Strategy Pattern**: Different rules for tournament formats
 7. **Command Pattern**: For queueing offline actions
-8. **Decorator Pattern**: For adding features to entities based on subscription tier 
+8. **Decorator Pattern**: For adding features to entities based on subscription tier
+9. **Module Pattern**: For organizing frontend service layer
+10. **Interceptor Pattern**: For handling authentication in API requests
+11. **Facade Pattern**: Service layer providing simplified interface to backend API 

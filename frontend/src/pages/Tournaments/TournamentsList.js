@@ -1,66 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
+import { tournamentService } from '../../services';
 import './Tournaments.css';
 
 const TournamentsList = () => {
   const { t } = useTranslation();
   const [filterStatus, setFilterStatus] = useState('all');
-  
-  // Mock data - in real app, this would come from API
-  const tournaments = [
-    { 
-      id: 1, 
-      name: 'Summer League 2023', 
-      location: 'Barcelona, Spain',
-      format: '7-a-side',
-      startDate: '2023-07-15',
-      endDate: '2023-08-30',
-      status: 'active',
-      teams: 12,
-      organizer: 'FC Barcelona Youth Academy'
-    },
-    { 
-      id: 2, 
-      name: 'City Cup', 
-      location: 'Manchester, UK',
-      format: '11-a-side',
-      startDate: '2023-06-01',
-      endDate: '2023-06-30', 
-      status: 'completed',
-      teams: 8,
-      organizer: 'Manchester City Foundation'
-    },
-    { 
-      id: 3, 
-      name: 'Winter Tournament 2023', 
-      location: 'Madrid, Spain',
-      format: '5-a-side',
-      startDate: '2023-12-01',
-      endDate: '2024-01-15',
-      status: 'upcoming',
-      teams: 16,
-      organizer: 'Madrid Football Federation'
-    },
-    { 
-      id: 4, 
-      name: 'Youth Championship', 
-      location: 'Liverpool, UK',
-      format: '11-a-side',
-      startDate: '2023-07-10',
-      endDate: '2023-08-20',
-      status: 'registration',
-      teams: 4,
-      organizer: 'Liverpool Youth Association'
-    }
-  ];
+  const [tournaments, setTournaments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch tournaments from API
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        // If filter is not 'all', we pass it as a query param
+        const filters = filterStatus !== 'all' ? { status: filterStatus } : {};
+        const response = await tournamentService.getAllTournaments(filters);
+        
+        if (response.status === 'success') {
+          setTournaments(response.data.tournaments);
+        } else {
+          setError('Failed to load tournaments');
+        }
+      } catch (err) {
+        console.error('Error fetching tournaments:', err);
+        setError(err.message || 'Failed to load tournaments');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTournaments();
+  }, [filterStatus]);
   
   // Filter tournaments based on selected status
-  const filteredTournaments = filterStatus === 'all' 
-    ? tournaments 
-    : tournaments.filter(tournament => tournament.status === filterStatus);
+  const filteredTournaments = tournaments;
   
   return (
     <div className="tournaments-container">
@@ -104,7 +84,18 @@ const TournamentsList = () => {
         </button>
       </div>
       
-      {filteredTournaments.length > 0 ? (
+      {loading ? (
+        <div className="loading-state">
+          <p>{t('common.loading')}</p>
+        </div>
+      ) : error ? (
+        <div className="error-state">
+          <p>{error}</p>
+          <Button onClick={() => setFilterStatus('all')} variant="secondary">
+            {t('tournament.show_all_tournaments')}
+          </Button>
+        </div>
+      ) : filteredTournaments.length > 0 ? (
         <div className="tournaments-grid">
           {filteredTournaments.map(tournament => (
             <Link to={`/tournaments/${tournament.id}`} key={tournament.id} className="tournament-card-link">
@@ -130,11 +121,11 @@ const TournamentsList = () => {
                   </div>
                   <div className="tournament-detail">
                     <span className="detail-label">{t('tournament.teams')}</span>
-                    <span className="detail-value">{tournament.teams} {t('common.teams')}</span>
+                    <span className="detail-value">{tournament.teamCount || 0} {t('common.teams')}</span>
                   </div>
                   <div className="tournament-detail">
                     <span className="detail-label">{t('tournament.organizer')}</span>
-                    <span className="detail-value">{tournament.organizer}</span>
+                    <span className="detail-value">{tournament.organizer?.name || 'Unknown'}</span>
                   </div>
                 </div>
               </Card>

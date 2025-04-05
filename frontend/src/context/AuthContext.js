@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authService } from '../services';
 
 const AuthContext = createContext(null);
 
@@ -12,22 +13,29 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         // Check if token exists in localStorage
-        const token = localStorage.getItem('authToken');
-        if (!token) {
+        if (!authService.isAuthenticated()) {
           setLoading(false);
           return;
         }
 
-        // In a real app, validate token with backend here
-        // For now, we'll just load user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+        // Get user data from localStorage for immediate UI display
+        const userData = authService.getCurrentUser();
         if (userData) {
           setUser(userData);
         }
+
+        // Verify token validity by fetching user profile from server
+        const response = await authService.getProfile();
+        if (response.status === 'success' && response.data.user) {
+          setUser(response.data.user);
+          // Update localStorage with latest user data
+          localStorage.setItem('userData', JSON.stringify(response.data.user));
+        }
       } catch (err) {
-        setError('Failed to restore authentication state');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userData');
+        console.error('Auth check error:', err);
+        setError('Session expired or invalid. Please login again.');
+        // Clean up invalid auth data
+        authService.logout();
       } finally {
         setLoading(false);
       }
@@ -39,15 +47,32 @@ export const AuthProvider = ({ children }) => {
   // Register a new user
   const register = async (userData) => {
     setLoading(true);
+    setError(null);
     try {
-      // In a real app, make API call to backend
-      // For now, we'll simulate a successful registration
-      setUser({ ...userData, id: `user-${Date.now()}` });
-      localStorage.setItem('authToken', 'dummy-token');
-      localStorage.setItem('userData', JSON.stringify({ ...userData, id: `user-${Date.now()}` }));
-      return true;
+      // Ensure userData has the correct structure
+      const formattedUserData = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        // If birthDate is required by backend but not collected in the form
+        // we can set a default or handle it on the backend
+        birthDate: userData.birthDate || new Date().toISOString(),
+        preferredLanguage: userData.preferredLanguage || 'en'
+      };
+
+      const response = await authService.register(formattedUserData);
+      
+      if (response.status === 'success' && response.data.user) {
+        setUser(response.data.user);
+        return true;
+      } else {
+        setError(response.message || 'Unknown registration error');
+        return false;
+      }
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      const errorMessage = err.message || 'Registration failed. Please try again.';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);
@@ -57,20 +82,20 @@ export const AuthProvider = ({ children }) => {
   // Login user
   const login = async (email, password) => {
     setLoading(true);
+    setError(null);
     try {
-      // In a real app, make API call to backend
-      // For now, we'll simulate a successful login
-      const userData = {
-        id: `user-${Date.now()}`,
-        email,
-        name: email.split('@')[0], // Mock name from email
-      };
-      setUser(userData);
-      localStorage.setItem('authToken', 'dummy-token');
-      localStorage.setItem('userData', JSON.stringify(userData));
-      return true;
+      const response = await authService.login(email, password);
+      
+      if (response.status === 'success' && response.data.user) {
+        setUser(response.data.user);
+        return true;
+      } else {
+        setError(response.message || 'Invalid credentials');
+        return false;
+      }
     } catch (err) {
-      setError(err.message || 'Login failed');
+      const errorMessage = err.message || 'Login failed. Please check your credentials.';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);
@@ -79,8 +104,7 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    authService.logout();
     setUser(null);
   };
 

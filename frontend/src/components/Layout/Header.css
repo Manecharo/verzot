@@ -57,6 +57,11 @@
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-block;
 }
 
 .login-link {
@@ -66,17 +71,21 @@
 
 .login-link:hover {
   color: var(--primary-red);
+  text-decoration: none;
 }
 
 .register-button {
-  color: #fff;
+  color: var(--text-primary, #ffffff);
   background-color: var(--primary-red);
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
+  border: none;
+  text-decoration: none;
 }
 
 .register-button:hover {
   background-color: var(--primary-red-dark);
+  text-decoration: none;
 }
 
 .profile-link {

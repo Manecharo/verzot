@@ -148,16 +148,26 @@
   margin-top: 1.5rem;
 }
 
+.loading-state,
+.error-state,
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
-  background-color: var(--dark-bg-secondary);
-  border-radius: 0.5rem;
-  color: var(--text-secondary);
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 2rem;
 }
 
+.loading-state p,
+.error-state p,
 .empty-state p {
+  font-size: 1.2rem;
+  color: #6c757d;
   margin-bottom: 1.5rem;
+}
+
+.error-state p {
+  color: #dc3545;
 }
 
 /* Team details page */

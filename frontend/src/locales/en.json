@@ -20,32 +20,47 @@
   },
   
   "auth": {
-    "login_title": "Welcome back",
-    "login_subtitle": "Sign in to your account to continue",
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create an account",
     "register_title": "Create an account",
     "register_subtitle": "Join Verzot to start organizing tournaments",
     "email": "Email",
-    "email_placeholder": "Enter your email",
-    "email_required": "Email is required",
-    "email_invalid": "Please enter a valid email",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Please enter a valid email",
     "password": "Password",
-    "password_placeholder": "Enter your password",
-    "password_required": "Password is required",
-    "password_length": "Password must be at least 8 characters",
-    "password_weak": "Password is too weak",
+    "passwordRequired": "Password is required",
+    "passwordLength": "Password must be at least 8 characters",
+    "firstName": "First Name",
+    "firstNameRequired": "First name is required",
+    "lastName": "Last Name",
+    "lastNameRequired": "Last name is required",
     "name": "Full Name",
-    "name_placeholder": "Enter your full name",
-    "name_required": "Name is required",
+    "nameRequired": "Name is required",
+    "confirmPassword": "Confirm Password",
     "confirm_password": "Confirm Password",
-    "confirm_password_placeholder": "Confirm your password",
-    "confirm_password_required": "Please confirm your password",
-    "passwords_not_match": "Passwords do not match",
-    "login_button": "Sign In",
+    "passwordsMustMatch": "Passwords do not match",
+    "login": "Sign In",
+    "register": "Create Account",
     "register_button": "Create Account",
-    "no_account": "Don't have an account?",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
     "have_account": "Already have an account?",
+    "signUp": "Register now",
+    "login_link": "Login",
     "register_link": "Register now",
-    "login_link": "Login"
+    "loggingIn": "Signing in...",
+    "registering": "Creating account..."
+  },
+  
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "tournaments": "Tournaments",
+    "teams": "Teams",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
   },
   
   "dashboard": {
@@ -112,7 +127,7 @@
     "manage_members": "Manage Members"
   },
   
-  "teams": {
+  "teams_section": {
     "search_placeholder": "Search teams by name or location",
     "no_teams_found": "No teams found",
     "no_teams_found_search": "No teams found matching your search",
