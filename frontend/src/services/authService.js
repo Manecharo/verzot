@@ -6,8 +6,7 @@ const USE_SUPABASE = process.env.REACT_APP_USE_SUPABASE === 'true';
 
 // Log configuration for debugging
 console.log('Auth Service Configuration:');
-console.log('- Using Supabase:', USE_SUPABASE);
-console.log('- API URL:', process.env.REACT_APP_API_URL);
+console.log(`- Using Supabase Auth: ${USE_SUPABASE ? 'Yes' : 'No'}`);
 
 /**
  * Authentication service for handling user authentication operations
@@ -16,275 +15,483 @@ const authService = {
   /**
    * Register a new user
    * @param {Object} userData - User registration data
-   * @returns {Promise<Object>} Registration response
+   * @returns {Promise<Object>} Response with status and data
    */
   register: async (userData) => {
     try {
-      // First try using Supabase directly
-      if (supabase && USE_SUPABASE) {
-        console.log('Registration: Using Supabase Auth API');
+      // Try Supabase registration first if enabled
+      if (USE_SUPABASE) {
+        console.log('Attempting to register with Supabase...');
+        
+        // Create user in Supabase Auth
         const { data, error } = await supabase.auth.signUp({
           email: userData.email,
           password: userData.password,
           options: {
             data: {
-              first_name: userData.firstName,
-              last_name: userData.lastName,
-              preferred_language: userData.preferredLanguage,
-              birth_date: userData.birthDate
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              fullName: `${userData.firstName} ${userData.lastName}`,
+              birthDate: userData.birthDate || new Date().toISOString().split('T')[0]
             }
           }
         });
         
-        if (error) throw new Error(error.message);
+        if (error) {
+          console.error('Supabase registration error:', error);
+          
+          // Return formatted error
+          return {
+            status: 'error',
+            message: error.message || 'Registration failed with Supabase'
+          };
+        }
         
-        if (data && data.user) {
+        if (data?.user) {
+          console.log('Supabase registration successful');
+          
+          // Store the session token
           localStorage.setItem('authToken', data.session?.access_token || '');
-          localStorage.setItem('userData', JSON.stringify({
+          
+          // Format user data for consistent structure
+          const formattedUser = {
             id: data.user.id,
             email: data.user.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            createdAt: data.user.created_at
-          }));
+            firstName: data.user.user_metadata?.firstName || '',
+            lastName: data.user.user_metadata?.lastName || '',
+            role: 'user',
+            ...data.user.user_metadata
+          };
+          
+          // Store user data in localStorage
+          localStorage.setItem('userData', JSON.stringify(formattedUser));
           
           return {
             status: 'success',
             data: {
-              user: {
-                id: data.user.id,
-                email: data.user.email,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                createdAt: data.user.created_at
-              },
+              user: formattedUser,
               token: data.session?.access_token
             }
           };
         }
       }
       
-      // Fallback to API if Supabase fails or is not enabled
+      // Fallback to API registration
+      console.log('Falling back to API registration...');
       const response = await api.post('/auth/register', userData);
-      if (response.data.data && response.data.data.token) {
-        localStorage.setItem('authToken', response.data.data.token);
-        localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+      
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('userData', JSON.stringify(response.data.user));
       }
-      return response.data;
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
     } catch (error) {
-      // Enhanced error handling
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        const errorData = error.response.data;
-        const errorMessage = errorData.message || 'Registration failed';
-        throw new Error(errorMessage);
-      } else if (error.request) {
-        // The request was made but no response was received
-        throw new Error('No response from server. Please check your connection.');
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        throw new Error(error.message || 'An unexpected error occurred');
-      }
+      console.error('Registration error:', error);
+      
+      // Format the error response
+      return {
+        status: 'error',
+        message: error.response?.data?.message || error.message || 'Registration failed'
+      };
     }
   },
-
+  
   /**
-   * Login a user
+   * Log in a user
    * @param {string} email - User email
    * @param {string} password - User password
-   * @returns {Promise<Object>} Login response
+   * @returns {Promise<Object>} Response with status and data
    */
   login: async (email, password) => {
     try {
-      // First try using Supabase directly
-      if (supabase && USE_SUPABASE) {
-        console.log('Login: Using Supabase Auth API');
+      // Try Supabase login first if enabled
+      if (USE_SUPABASE) {
+        console.log('Attempting to login with Supabase...');
+        
+        // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
         
-        if (error) throw new Error(error.message);
-        
-        if (data && data.user) {
+        if (error) {
+          console.error('Supabase login error:', error);
+          
+          // If Supabase login fails but it's a known error (like invalid credentials),
+          // don't try the fallback API to avoid confusing the user with multiple attempts
+          if (error.message.includes('Invalid login credentials')) {
+            return {
+              status: 'error',
+              message: 'Invalid email or password'
+            };
+          }
+          
+          // For other errors, we'll try the fallback API
+          console.log('Supabase error seems to be a service issue, trying fallback API...');
+        } else if (data?.user) {
+          console.log('Supabase login successful');
+          
+          // Store the session token
           localStorage.setItem('authToken', data.session?.access_token || '');
-          localStorage.setItem('userData', JSON.stringify({
+          
+          // Get user's metadata from Supabase user object
+          const formattedUser = {
             id: data.user.id,
             email: data.user.email,
-            firstName: data.user.user_metadata?.first_name || '',
-            lastName: data.user.user_metadata?.last_name || '',
-            createdAt: data.user.created_at
-          }));
+            firstName: data.user.user_metadata?.firstName || '',
+            lastName: data.user.user_metadata?.lastName || '',
+            role: 'user',
+            ...data.user.user_metadata
+          };
+          
+          // Store user data in localStorage
+          localStorage.setItem('userData', JSON.stringify(formattedUser));
           
           return {
             status: 'success',
             data: {
-              user: {
-                id: data.user.id,
-                email: data.user.email,
-                firstName: data.user.user_metadata?.first_name || '',
-                lastName: data.user.user_metadata?.last_name || '',
-                createdAt: data.user.created_at
-              },
+              user: formattedUser,
               token: data.session?.access_token
             }
           };
         }
       }
       
-      // Fallback to API if Supabase fails or is not enabled
+      // Fallback to API login if Supabase failed or is disabled
+      console.log('Falling back to API login...');
       const response = await api.post('/auth/login', { email, password });
-      if (response.data.data && response.data.data.token) {
-        localStorage.setItem('authToken', response.data.data.token);
-        localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+      
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('userData', JSON.stringify(response.data.user));
       }
-      return response.data;
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
     } catch (error) {
-      // Enhanced error handling
+      console.error('Login error:', error);
+      
+      // Simplified error handling
+      let errorMessage = 'Login failed. Please try again.';
+      
       if (error.response) {
-        // Server responded with an error status
-        const errorData = error.response.data;
-        const errorMessage = errorData.message || 'Invalid email or password';
-        throw new Error(errorMessage);
-      } else if (error.request) {
-        // No response received
-        throw new Error('No response from server. Please check your connection.');
-      } else {
-        // Other error
-        throw new Error(error.message || 'An unexpected error occurred');
+        // Handle specific API error cases
+        if (error.response.status === 401) {
+          errorMessage = 'Invalid email or password';
+        } else if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
       }
+      
+      return {
+        status: 'error',
+        message: errorMessage
+      };
     }
   },
-
+  
   /**
-   * Logout a user
+   * Log out the current user
    */
-  logout: async () => {
-    // Try to sign out from Supabase
-    if (supabase && USE_SUPABASE) {
-      await supabase.auth.signOut();
+  logout: () => {
+    if (USE_SUPABASE) {
+      // Sign out from Supabase
+      supabase.auth.signOut().catch(err => {
+        console.error('Error during Supabase signout:', err);
+      });
     }
     
+    // Clear local storage
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
   },
-
+  
   /**
-   * Get user profile
-   * @returns {Promise<Object>} User profile data
+   * Get the current user profile
+   * @returns {Promise<Object>} Response with status and data
    */
   getProfile: async () => {
     try {
-      // Try to get user from Supabase
-      if (supabase && USE_SUPABASE) {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) throw error;
+      if (USE_SUPABASE) {
+        // Get session from Supabase
+        const { data, error } = await supabase.auth.getSession();
         
-        if (data && data.user) {
-          return {
-            status: 'success',
-            data: {
-              user: {
-                id: data.user.id,
-                email: data.user.email,
-                firstName: data.user.user_metadata?.first_name || '',
-                lastName: data.user.user_metadata?.last_name || '',
-                createdAt: data.user.created_at
+        if (error) {
+          throw error;
+        }
+        
+        if (data?.session) {
+          // Get user details
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          
+          if (userError) {
+            throw userError;
+          }
+          
+          if (userData?.user) {
+            // Format user data
+            const formattedUser = {
+              id: userData.user.id,
+              email: userData.user.email,
+              firstName: userData.user.user_metadata?.firstName || '',
+              lastName: userData.user.user_metadata?.lastName || '',
+              role: 'user',
+              ...userData.user.user_metadata
+            };
+            
+            return {
+              status: 'success',
+              data: {
+                user: formattedUser
               }
-            }
-          };
+            };
+          }
         }
       }
       
       // Fallback to API
       const response = await api.get('/auth/profile');
-      return response.data;
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
     } catch (error) {
-      // Enhanced error handling
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData.message || 'Failed to fetch profile';
-        throw new Error(errorMessage);
-      } else {
-        throw new Error(error.message || 'Network error or server unavailable');
-      }
+      console.error('Profile fetch error:', error);
+      
+      return {
+        status: 'error',
+        message: error.response?.data?.message || error.message || 'Failed to load profile'
+      };
     }
   },
-
+  
   /**
    * Update user profile
-   * @param {Object} profileData - Updated profile data
-   * @returns {Promise<Object>} Updated user profile
+   * @param {Object} userData - User profile data to update
+   * @returns {Promise<Object>} Response with status and data
    */
-  updateProfile: async (profileData) => {
+  updateProfile: async (userData) => {
     try {
-      // Try to update user in Supabase
-      if (supabase && USE_SUPABASE) {
+      if (USE_SUPABASE) {
+        // Update user metadata in Supabase
         const { data, error } = await supabase.auth.updateUser({
-          data: {
-            first_name: profileData.firstName,
-            last_name: profileData.lastName,
-            // Include other profile data as needed
-          }
+          data: userData
         });
         
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
         
-        if (data && data.user) {
-          const userData = {
-            id: data.user.id,
-            email: data.user.email,
-            firstName: data.user.user_metadata?.first_name || '',
-            lastName: data.user.user_metadata?.last_name || '',
-            createdAt: data.user.created_at
+        if (data?.user) {
+          // Update local storage
+          const currentUser = JSON.parse(localStorage.getItem('userData') || '{}');
+          const updatedUser = {
+            ...currentUser,
+            ...userData
           };
           
-          localStorage.setItem('userData', JSON.stringify(userData));
+          localStorage.setItem('userData', JSON.stringify(updatedUser));
           
           return {
             status: 'success',
             data: {
-              user: userData
+              user: updatedUser
             }
           };
         }
       }
       
       // Fallback to API
-      const response = await api.put('/auth/profile', profileData);
-      if (response.data.data && response.data.data.user) {
-        localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-      }
-      return response.data;
+      const response = await api.put('/auth/profile', userData);
+      
+      // Update local storage
+      const currentUser = JSON.parse(localStorage.getItem('userData') || '{}');
+      const updatedUser = {
+        ...currentUser,
+        ...response.data.user
+      };
+      
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
     } catch (error) {
-      // Enhanced error handling
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData.message || 'Failed to update profile';
-        throw new Error(errorMessage);
-      } else {
-        throw new Error(error.message || 'Network error or server unavailable');
-      }
+      console.error('Profile update error:', error);
+      
+      return {
+        status: 'error',
+        message: error.response?.data?.message || error.message || 'Failed to update profile'
+      };
     }
   },
-
+  
+  /**
+   * Change user password
+   * @param {string} currentPassword - Current password
+   * @param {string} newPassword - New password
+   * @returns {Promise<Object>} Response with status and data
+   */
+  changePassword: async (currentPassword, newPassword) => {
+    try {
+      if (USE_SUPABASE) {
+        // Verify current password by attempting to sign in
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: authService.getCurrentUser()?.email || '',
+          password: currentPassword
+        });
+        
+        if (signInError) {
+          return {
+            status: 'error',
+            message: 'Current password is incorrect'
+          };
+        }
+        
+        // Update password in Supabase
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword
+        });
+        
+        if (error) {
+          throw error;
+        }
+        
+        return {
+          status: 'success',
+          message: 'Password updated successfully'
+        };
+      }
+      
+      // Fallback to API
+      const response = await api.put('/auth/change-password', {
+        currentPassword,
+        newPassword
+      });
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
+    } catch (error) {
+      console.error('Password change error:', error);
+      
+      return {
+        status: 'error',
+        message: error.response?.data?.message || error.message || 'Failed to change password'
+      };
+    }
+  },
+  
+  /**
+   * Upload profile image
+   * @param {FormData} formData - Form data containing the profile image
+   * @param {function} progressCallback - Callback for upload progress
+   * @returns {Promise<Object>} Response with status and data
+   */
+  uploadProfileImage: async (formData, progressCallback) => {
+    try {
+      if (USE_SUPABASE) {
+        // Get the current user to use their ID in the file name
+        const user = authService.getCurrentUser();
+        if (!user || !user.id) {
+          throw new Error('User not authenticated');
+        }
+        
+        // Extract the file from the FormData
+        const file = formData.get('profileImage');
+        if (!file) {
+          throw new Error('No file provided');
+        }
+        
+        // Generate a unique file name
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+        
+        // Upload to Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('profile-images')
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: true,
+            onUploadProgress: (progress) => {
+              const percentage = Math.round((progress.loaded / progress.total) * 100);
+              if (progressCallback) progressCallback(percentage);
+            }
+          });
+        
+        if (error) {
+          throw error;
+        }
+        
+        // Get public URL for the uploaded file
+        const { data: urlData } = supabase.storage
+          .from('profile-images')
+          .getPublicUrl(fileName);
+        
+        const imageUrl = urlData.publicUrl;
+        
+        return {
+          status: 'success',
+          data: {
+            imageUrl
+          }
+        };
+      }
+      
+      // Fallback to API using axios for progress tracking
+      const config = {
+        onUploadProgress: (progressEvent) => {
+          const percentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          if (progressCallback) progressCallback(percentage);
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+      
+      const response = await api.post('/auth/profile/image', formData, config);
+      
+      return {
+        status: 'success',
+        data: response.data
+      };
+    } catch (error) {
+      console.error('Image upload error:', error);
+      
+      return {
+        status: 'error',
+        message: error.response?.data?.message || error.message || 'Failed to upload profile image'
+      };
+    }
+  },
+  
   /**
    * Check if user is authenticated
-   * @returns {boolean} Authentication status
+   * @returns {boolean} True if authenticated
    */
   isAuthenticated: () => {
     return !!localStorage.getItem('authToken');
   },
-
+  
   /**
-   * Get current user data
-   * @returns {Object|null} User data or null if not authenticated
+   * Get current user data from localStorage
+   * @returns {Object|null} User data or null
    */
   getCurrentUser: () => {
-    const userDataString = localStorage.getItem('userData');
-    return userDataString ? JSON.parse(userDataString) : null;
-  },
+    const userData = localStorage.getItem('userData');
+    return userData ? JSON.parse(userData) : null;
+  }
 };
 
 export default authService; 

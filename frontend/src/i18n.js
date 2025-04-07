@@ -30,7 +30,11 @@ i18n
     },
     react: {
       useSuspense: true
-    }
+    },
+    // Ensure all keys are properly loaded even if missing
+    returnNull: false,
+    returnEmptyString: false,
+    returnObjects: true // Enable accessing objects in translations
   });
 
 export default i18n; 

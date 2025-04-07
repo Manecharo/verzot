@@ -3,94 +3,97 @@
 ## Technology Stack
 
 ### Frontend
-- **Framework**: React.js 18.2.0
-- **Routing**: React Router DOM 6.10.0
-- **International**: react-i18next 12.2.0 and i18next 22.4.15
-- **Real-time**: Socket.io Client 4.6.1
-- **HTTP Client**: Axios 1.3.6
-- **State Management**: React Context API, with potential for Redux if complexity increases
-- **Styling**: CSS Modules and/or Styled Components, with a focus on responsive design
-- **Build Tools**: React Scripts 5.0.1 (Create React App)
+- **Framework**: React.js
+- **Type System**: JavaScript with PropTypes
+- **Styling**: CSS Modules
+- **State Management**: Context API
+- **Routing**: React Router 6
+- **Internationalization**: i18next with React-i18next
+- **Authentication**: Supabase Auth
+- **API Communication**: Axios
+- **Real-time Updates**: Socket.io client
+- **Build Tool**: Create React App
+- **Deployment**: Vercel
 
 ### Backend
 - **Runtime**: Node.js
-- **Framework**: Express.js 4.18.2
-- **Authentication**: JWT (jsonwebtoken 9.0.0)
-- **Password Hashing**: bcryptjs
-- **Input Validation**: express-validator 7.0.1
-- **Real-time Communication**: Socket.io 4.6.1
-- **Database ORM**: Sequelize 6.31.0
-- **Payment Processing**: Stripe 12.2.0
-- **Cross-Origin Support**: CORS
-- **Environment Variables**: dotenv
+- **Framework**: Express.js
+- **API Architecture**: RESTful with versioning
+- **Database ORM**: Sequelize with PostgreSQL
+- **Authentication**: JWT (to be integrated with Supabase Auth)
+- **Real-time Communication**: Socket.io
+- **Validation**: Express Validator
+- **File Storage**: (Planned) Supabase Storage
 
 ### Database
-- **RDBMS**: PostgreSQL
-- **ORM**: Sequelize with pg and pg-hstore drivers
-- **Connection Pooling**: Managed through Sequelize
-- **Schema Management**: Migrations and models via Sequelize
+- **Primary Database**: PostgreSQL (via Supabase)
+- **Connection**: Supabase connection pooler
+- **Schema Management**: Sequelize migrations
+- **Authentication Store**: Supabase Auth
 
-### Hosting & Infrastructure
-- **Cloud Provider**: AWS (planned)
-- **Application Hosting**: AWS Elastic Beanstalk
-- **Database Hosting**: AWS RDS (PostgreSQL)
-- **File Storage**: AWS S3
-- **Optional Caching**: AWS ElastiCache
-
-### DevOps
+### Development Tools
 - **Version Control**: Git
-- **CI/CD**: To be determined
-- **Logging**: Winston/Morgan
-- **Monitoring**: To be determined
+- **Package Manager**: npm
+- **Code Linting**: ESLint
+- **Code Formatting**: Prettier
+- **Testing**: (Planned) Jest, React Testing Library
+- **API Testing**: (Planned) Supertest
+- **CI/CD**: (Planned) GitHub Actions
 
-## Development Setup
+## Key Technologies
 
-### Local Development Environment
-1. **Node.js**: Version 16.x or later
-2. **PostgreSQL**: Version 14.x
-3. **npm/yarn**: For package management
-4. **Git**: For version control
-5. **Code Editor**: VS Code recommended with ESLint/Prettier
+### React.js
+React is used for building the user interface with a component-based architecture. The application uses functional components with hooks for state management and side effects.
 
-### Required Environment Variables
+### Supabase
+Supabase provides the authentication and database services for the application:
+- **Supabase Auth**: Used for user authentication, providing email/password authentication
+- **Supabase PostgreSQL**: PostgreSQL database for storing application data
+- **Supabase Storage**: (Planned) For storing user uploads like profile pictures and team logos
 
-#### Backend (.env file)
-```
-# Server Configuration
-PORT=5000
-NODE_ENV=development
+### Vercel
+Vercel is used for frontend deployment, providing:
+- **CI/CD**: Automatic deployments from the GitHub repository
+- **Environment Variables**: Secure storage of configuration values
+- **Edge Network**: Global content delivery for fast loading times
+- **Preview Deployments**: For testing changes before production release
 
-# Frontend URL for CORS
-FRONTEND_URL=http://localhost:3000
+### Express.js
+Express serves as the backend framework, providing:
+- RESTful API endpoints
+- Middleware for authentication, validation, and error handling
+- Route organization for various resources
+- Integration with Socket.io for real-time features
 
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=verzot_db
+### Socket.io
+Socket.io enables real-time communication features:
+- Live match updates
+- Real-time notifications
+- Tournament status changes
 
-# JWT Secret for Authentication
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRATION=86400
+### Sequelize
+Sequelize is the ORM for database interactions:
+- Model definitions
+- Associations between models
+- Migrations for schema changes
+- Seeding for test data
 
-# Stripe API Keys
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+### Internationalization (i18next)
+i18next with React-i18next provides multilingual support:
+- Translation files for different languages
+- Language detection
+- Locale formatting
 
-# AWS S3 Configuration (for file uploads)
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_BUCKET_NAME=your_s3_bucket_name
-AWS_REGION=your_aws_region
-```
+## Architecture
 
-#### Frontend (.env file)
-```
-REACT_APP_API_URL=http://localhost:5000/api/v1
-REACT_APP_SOCKET_URL=http://localhost:5000
-REACT_APP_STRIPE_PUBLIC_KEY=your_stripe_public_key
-```
+### Frontend Architecture
+The frontend follows a component-based architecture:
+- **Pages**: High-level components representing different routes
+- **Components**: Reusable UI elements
+- **Context**: For global state management
+- **Services**: For API communication
+- **Hooks**: For shared logic
+- **Assets**: Static resources
 
 ### Repository Structure
 
@@ -236,242 +239,146 @@ We're using Supabase's hosted PostgreSQL database for data persistence. The inte
    - Models defined with Sequelize DataTypes
    - Associations handled through Sequelize relationships
    - Database syncing with `alter: true` in development mode
-
+### Backend Architecture
+The backend follows a layered architecture:
+- **Routes**: Define API endpoints
+- **Controllers**: Handle request processing
+- **Services**: Implement business logic
+- **Models**: Define data structure
+- **Middleware**: Cross-cutting concerns
+- **Utils**: Helper functions
 ### Database Schema
+The database schema is composed of several interconnected models:
+- **User**: Stores user information and authentication details
+- **Role**: Defines user roles (Admin, Organizer, TeamLeader, Referee, Player)
+- **UserRole**: Junction table for user-role relationship
+- **Tournament**: Stores tournament details and configuration
+- **Team**: Represents a team with its details
+- **Player**: Stores player information
+- **TeamTournament**: Junction table for team-tournament relationships
+- **Match**: Represents a match between teams
+- **MatchEvent**: Records events during matches (goals, cards, etc.)
+- **Subscription**: Stores subscription information for premium features
 
-The primary entities in our database include:
+### Authentication Flow
 
-1. **Users**: Application users including players, team managers, and tournament organizers
-2. **Roles**: User roles for permission management
-3. **Tournaments**: Tournament details including format, dates, and visibility
-4. **Teams**: Team information including roster and contact details
-5. **Players**: Individual player profiles
-6. **Matches**: Match scheduling and results
-7. **Match Events**: Key events during matches (goals, fouls, etc.)
-8. **Subscriptions**: User subscriptions to tournaments or teams
+The authentication system now uses Supabase Auth:
 
-## API Structure
+1. **Registration**:
+   - User submits registration form
+   - Form data is validated on the client side
+   - Supabase Auth API is called to create a new user
+   - User information is stored in Supabase Auth
+   - JWT token is returned and stored in localStorage
+   - User is redirected to dashboard
 
-### Authentication Endpoints
-- `POST /api/v1/auth/register`: User registration
-- `POST /api/v1/auth/login`: User authentication
-- `GET /api/v1/auth/profile`: Get current user profile
-- `PUT /api/v1/auth/profile`: Update user profile
-- `PUT /api/v1/auth/change-password`: Change user password
+2. **Login**:
+   - User submits login form
+   - Credentials are validated on the client side
+   - Supabase Auth API is called to authenticate the user
+   - JWT token is returned and stored in localStorage
+   - User is redirected to dashboard
 
-### User Management Endpoints
-- `GET /api/v1/users/:userId`: Get user by ID
-- `PUT /api/v1/users/profile`: Update user profile
-- `PUT /api/v1/users/change-password`: Change user password
+3. **Authentication State**:
+   - AuthContext maintains the authentication state
+   - Supabase session is checked on app initialization
+   - Protected routes verify authentication status
+   - Logout clears the Supabase session and local storage
 
-### Tournament Management Endpoints
-- `GET /api/v1/tournaments`: List tournaments with filtering
-- `POST /api/v1/tournaments`: Create a new tournament
-- `GET /api/v1/tournaments/:id`: Get tournament details
-- `PUT /api/v1/tournaments/:id`: Update tournament
-- `DELETE /api/v1/tournaments/:id`: Delete tournament
+4. **JWT Validation**:
+   - Backend API will validate JWT tokens from Supabase
+   - Role-based authorization will be implemented
 
-### Team Management Endpoints
-- `GET /api/v1/teams`: List teams
-- `POST /api/v1/teams`: Create a new team
-- `GET /api/v1/teams/:id`: Get team details
-- `PUT /api/v1/teams/:id`: Update team
-- `DELETE /api/v1/teams/:id`: Delete team
+## Development Setup
 
-### Match Management Endpoints
-- `GET /api/v1/matches`: List matches
-- `POST /api/v1/matches`: Create a new match
-- `GET /api/v1/matches/:id`: Get match details
-- `PUT /api/v1/matches/:id`: Update match
-- `DELETE /api/v1/matches/:id`: Delete match
+### Prerequisites
+- Node.js (v14+)
+- npm (v6+)
+- PostgreSQL (via Supabase)
+- Git
 
-## Authentication and Authorization
+### Frontend Setup
+1. Clone the repository
+2. Navigate to the `frontend` directory
+3. Install dependencies with `npm install`
+4. Create a `.env` file with required environment variables
+5. Start the development server with `npm start`
 
-- **JWT-based authentication**: Tokens stored in HTTP-only cookies
-- **Role-based access control**: Different permissions for players, team managers, and tournament organizers
-- **Password security**: Bcrypt hashing with appropriate salt rounds
-- **Token refresh mechanism**: Automatically refresh tokens before expiry
+### Backend Setup
+1. Navigate to the `backend` directory
+2. Install dependencies with `npm install`
+3. Create a `.env` file with required environment variables
+4. Start the development server with `npm run dev`
 
-## Real-time Features
+### Environment Variables
 
-- **Socket.io implementation**: Real-time updates for match events
-- **Room-based subscriptions**: Users subscribe to specific tournaments or matches
-- **Event broadcasting**: Server broadcasts events to subscribed clients
-
-## Internationalization
-
-- **i18next integration**: Translation resources for multiple languages
-- **Language detection**: Automatically detect user's preferred language
-- **Fallback mechanism**: Default to English when translation is not available
-
-## Development Workflow
-
-- **Git workflow**: Feature branches and pull requests
-- **Code style**: ESLint and Prettier for consistent code formatting
-- **Testing**: Jest for unit tests, Supertest for API tests
-- **Documentation**: JSDoc for code documentation
-
-## Deployment Considerations
-
-- **Environment variables**: Configuration via environment variables
-- **Database migrations**: Sequelize migrations for database schema changes
-- **CI/CD pipeline**: Automated testing and deployment
-- **Containerization**: Docker for consistent development and production environments
-- **Monitoring**: Error tracking and performance monitoring
-
-## Security Considerations
-
-- **Input validation**: Express-validator for request validation
-- **SQL injection protection**: Parameterized queries via Sequelize
-- **XSS protection**: Content Security Policy headers
-- **CSRF protection**: Anti-CSRF tokens
-- **Rate limiting**: Prevent brute force attacks
-
-## Performance Optimizations
-
-- **Database indexing**: Appropriate indexes for frequently queried fields
-- **Query optimization**: Efficient Sequelize queries with proper includes
-- **Connection pooling**: Reuse database connections for better performance
-- **Caching**: Redis for caching frequently accessed data
-- **Pagination**: Limit results for list endpoints 
-
-## UI Implementation and Best Practices
-
-### Theme System
-
-The application implements a consistent theming approach using CSS variables:
-
-```css
-:root {
-  /* Core theme colors */
-  --primary-red: #e63946;
-  --primary-red-dark: #c1121f;
-  --primary-red-light: #ff6b6b;
-  
-  /* Background colors */
-  --dark-bg-primary: #121212;
-  --dark-bg-secondary: #1e1e1e;
-  --dark-bg-elevated: #2d2d2d;
-  
-  /* Text colors */
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --text-tertiary: #737373;
-  
-  /* Utility colors */
-  --success: #4caf50;
-  --warning: #ff9800;
-  --error: #f44336;
-  --info: #2196f3;
-  
-  /* Additional variables */
-  --border-radius: 4px;
-  --shadow-color: rgba(0, 0, 0, 0.2);
-  --transition-speed: 0.3s;
-}
+#### Frontend Environment Variables
+```
+REACT_APP_API_URL=http://localhost:5000/api/v1
+REACT_APP_SOCKET_URL=http://localhost:5000
+REACT_APP_SUPABASE_URL=<your-supabase-url>
+REACT_APP_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+REACT_APP_USE_SUPABASE=true
 ```
 
-These variables are utilized throughout the application to maintain visual consistency and enable potential theme swapping.
-
-### Form Handling
-
-Form components follow these principles:
-- Controlled inputs with React state management
-- Comprehensive validation with feedback messages
-- Loading states during form submission
-- Error handling with user-friendly messages
-- Consistent styling across all forms
-- Placeholder text for improved user guidance
-
-Example approach:
-```jsx
-const [formData, setFormData] = useState({
-  email: '',
-  password: ''
-});
-
-const [formErrors, setFormErrors] = useState({});
-const [isProcessing, setIsProcessing] = useState(false);
-
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  setFormData({
-    ...formData,
-    [name]: value
-  });
-  
-  // Clear field-specific error when user types
-  if (formErrors[name]) {
-    setFormErrors({
-      ...formErrors,
-      [name]: ''
-    });
-  }
-};
+#### Backend Environment Variables
+```
+PORT=5000
+NODE_ENV=development
+DATABASE_URL=<supabase-connection-string>
+JWT_SECRET=<jwt-secret>
+JWT_EXPIRES_IN=1d
 ```
 
-### Internationalization Implementation
+## Deployment
 
-The application uses i18next for internationalization with these best practices:
-- Structured translation keys organized by feature
-- Proper namespacing to avoid key collisions
-- Translation fallbacks for missing keys
-- Key naming conventions follow dot notation for hierarchy
-- Consistent interpolation patterns
+### Frontend Deployment (Vercel)
+1. Push code to GitHub repository
+2. Connect repository to Vercel
+3. Configure build settings:
+   - Framework Preset: Create React App
+   - Root Directory: frontend
+   - Build Command: npm run vercel-build
+   - Output Directory: build
+4. Set environment variables in Vercel dashboard
+5. Deploy
 
-Key organization example:
-```json
-{
-  "common": {
-    "loading": "Loading...",
-    "teams": "teams",
-    "members": "members"
-  },
-  "auth": {
-    "email": "Email",
-    "password": "Password",
-    "login": "Sign In"
-  },
-  "teams_section": {
-    "search_placeholder": "Search teams by name or location",
-    "no_teams_found": "No teams found"
-  }
-}
-```
+### Backend Deployment (Planned)
+1. Configure backend for production
+2. Deploy to suitable platform (Heroku, AWS, etc.)
+3. Set up environment variables
+4. Configure domain and SSL
 
-### UI Component Structure
+## External Services
 
-Components follow these organizational patterns:
-- **Atomic Design Principles**: Building complex components from simpler ones
-- **Component Composition**: Using composition over inheritance
-- **Predictable Props**: Clear prop interfaces with defaults and validation
-- **Container/Presentation Split**: Separating data management from presentation
-- **Consistent Styling**: Using CSS modules scoped to components
+### Supabase
+- **Auth**: User authentication and management
+- **Database**: PostgreSQL database for data storage
+- **Storage**: (Planned) File storage for user uploads
 
-### Error Handling Strategy
+### Stripe (Planned)
+- Payment processing for subscription plans
+- Webhook integration for payment events
+- Subscription management
 
-UI error handling follows a consistent pattern:
-- Form validation with specific error messages per field
-- Global error handling for API failures
-- User-friendly error messages with suggestions
-- Console logging for development debugging
-- Error boundaries for component-level failures
+## Technical Constraints
 
-### Mobile Responsiveness
+1. **Browser Compatibility**: Supporting modern browsers (last 2 versions)
+2. **Mobile Responsiveness**: Mobile-first design approach
+3. **Performance**: Optimizing bundle size and load times
+4. **SEO**: Proper metadata and optimizations for search engines
+5. **Accessibility**: Following WCAG guidelines for accessibility
+6. **Security**: Implementing best practices for secure authentication and data protection
 
-Mobile-first design implemented through:
-- Flexbox and CSS Grid for adaptive layouts
-- Media queries for breakpoint-specific styling
-- Touch-friendly UI elements with appropriate sizing
-- Responsive typography with relative units (rem/em)
-- Content prioritization for small screens
+## Future Technical Roadmap
 
-### Accessibility Considerations
-
-The application implements these accessibility features:
-- Semantic HTML elements (nav, main, section, etc.)
-- ARIA attributes where appropriate
-- Keyboard navigability
-- Sufficient color contrast
-- Focus management
-- Screen reader support 
+1. **Mobile Apps**: Native mobile applications using React Native
+2. **Performance Optimizations**: 
+   - Code splitting
+   - Server-side rendering
+   - Image optimization
+3. **Enhanced Analytics**: Integration with analytics platforms
+4. **Advanced Search**: Implementing full-text search for tournaments and teams
+5. **Machine Learning**: Recommendations for tournaments based on user preferences
+6. **Offline Support**: Enhanced offline functionality for critical features
+7. **Social Integration**: Integration with social media platforms 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
+import NotificationBadge from '../Notifications/NotificationBadge';
 import './Header.css';
 
 const Header = () => {
@@ -46,6 +47,13 @@ const Header = () => {
           >
             {t('teams')}
           </NavLink>
+          <NavLink 
+            to="/players" 
+            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            {t('players')}
+          </NavLink>
           
           {isAuthenticated && (
             <NavLink 
@@ -61,6 +69,8 @@ const Header = () => {
         <div className={`auth-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
           {isAuthenticated ? (
             <>
+              <NotificationBadge />
+              
               <NavLink 
                 to="/profile" 
                 className={({ isActive }) => isActive ? 'auth-link profile-link active' : 'auth-link profile-link'}

@@ -8,6 +8,10 @@ import Loading from './components/UI/Loading';
 
 // Auth Context
 import { AuthProvider, useAuth } from './context/AuthContext';
+// Notification Context
+import { NotificationProvider } from './context/NotificationContext';
+// Toast Context
+import { ToastProvider } from './context/ToastContext';
 
 // Page components (lazy loaded)
 const Home = React.lazy(() => import('./pages/Home'));
@@ -17,11 +21,22 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
 const TournamentsList = React.lazy(() => import('./pages/Tournaments/TournamentsList'));
 const TournamentDetails = React.lazy(() => import('./pages/Tournaments/TournamentDetails'));
 const TournamentCreate = React.lazy(() => import('./pages/Tournaments/TournamentCreate'));
+const TournamentStandings = React.lazy(() => import('./pages/Tournaments/TournamentStandings'));
+const TournamentBrackets = React.lazy(() => import('./pages/Tournaments/TournamentBrackets'));
+const TournamentPlayerStats = React.lazy(() => import('./pages/Tournaments/TournamentPlayerStats'));
+const PlayerDetailStats = React.lazy(() => import('./pages/Tournaments/PlayerDetailStats'));
+const MatchScheduler = React.lazy(() => import('./pages/Tournaments/MatchScheduler'));
+const MatchResults = React.lazy(() => import('./pages/Tournaments/MatchResults'));
 const TeamsList = React.lazy(() => import('./pages/Teams/TeamsList'));
 const TeamDetails = React.lazy(() => import('./pages/Teams/TeamDetails'));
 const TeamCreate = React.lazy(() => import('./pages/Teams/TeamCreate'));
+const PlayersList = React.lazy(() => import('./pages/Players/PlayersList'));
+const PlayerCreate = React.lazy(() => import('./pages/Players/PlayerCreate'));
+const PlayerDetail = React.lazy(() => import('./pages/Players/PlayerDetail'));
 const Profile = React.lazy(() => import('./pages/Profile/Profile'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Notifications = React.lazy(() => import('./pages/Notifications/Notifications'));
+const NotificationPreferences = React.lazy(() => import('./pages/Notifications/NotificationPreferences'));
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -82,6 +97,54 @@ function AppRoutes() {
             } 
           />
           <Route 
+            path="/tournaments/:id/standings" 
+            element={
+              <ProtectedRoute>
+                <TournamentStandings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/:id/brackets" 
+            element={
+              <ProtectedRoute>
+                <TournamentBrackets />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/:id/player-stats" 
+            element={
+              <ProtectedRoute>
+                <TournamentPlayerStats />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/:tournamentId/players/:playerId/stats" 
+            element={
+              <ProtectedRoute>
+                <PlayerDetailStats />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/tournaments/:id/schedule" 
+            element={
+              <ProtectedRoute>
+                <MatchScheduler />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/matches/:matchId" 
+            element={
+              <ProtectedRoute>
+                <MatchResults />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/teams" 
             element={
               <ProtectedRoute>
@@ -105,11 +168,60 @@ function AppRoutes() {
               </ProtectedRoute>
             } 
           />
+          {/* Player routes */}
+          <Route 
+            path="/players" 
+            element={
+              <ProtectedRoute>
+                <PlayersList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/players/create" 
+            element={
+              <ProtectedRoute>
+                <PlayerCreate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/players/create/:teamId" 
+            element={
+              <ProtectedRoute>
+                <PlayerCreate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/players/:playerId" 
+            element={
+              <ProtectedRoute>
+                <PlayerDetail />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="/profile" 
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/notifications" 
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/notifications/preferences" 
+            element={
+              <ProtectedRoute>
+                <NotificationPreferences />
               </ProtectedRoute>
             } 
           />
@@ -125,7 +237,11 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <ToastProvider>
+        <NotificationProvider>
+          <AppRoutes />
+        </NotificationProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }

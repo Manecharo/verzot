@@ -84,6 +84,11 @@ module.exports = (sequelize, DataTypes) => {
       through: models.UserRole, 
       foreignKey: 'userId' 
     });
+    
+    User.hasMany(models.Notification, {
+      foreignKey: 'userId',
+      as: 'Notifications'
+    });
   };
 
   return User;

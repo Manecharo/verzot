@@ -1,7 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/auth.controller');
-const authMiddleware = require('../middleware/auth.middleware');
-const validationMiddleware = require('../middleware/validation.middleware');
+const middleware = require('../middleware');
 
 const router = express.Router();
 
@@ -12,7 +11,8 @@ const router = express.Router();
  */
 router.post(
   '/register',
-  validationMiddleware.registerValidation,
+  middleware.validateRegistration,
+  middleware.checkValidation,
   authController.register
 );
 
@@ -23,7 +23,8 @@ router.post(
  */
 router.post(
   '/login',
-  validationMiddleware.loginValidation,
+  middleware.validateLogin,
+  middleware.checkValidation,
   authController.login
 );
 
@@ -34,8 +35,18 @@ router.post(
  */
 router.get(
   '/profile',
-  authMiddleware.authenticate,
+  middleware.verifyToken,
   authController.getProfile
+);
+
+/**
+ * @route   POST /api/v1/auth/refresh
+ * @desc    Refresh authentication token
+ * @access  Public (with refresh token)
+ */
+router.post(
+  '/refresh',
+  authController.refreshToken
 );
 
 /**

@@ -12,6 +12,8 @@ const defineTeamTournament = require('./teamTournament.model');
 const defineMatch = require('./match.model');
 const defineMatchEvent = require('./matchEvent.model');
 const defineSubscription = require('./subscription.model');
+const defineNotification = require('./notification.model');
+const defineNotificationPreference = require('./notificationPreference.model');
 
 // Initialize models in dependency order
 const Role = defineRole(sequelize, Sequelize.DataTypes);
@@ -24,6 +26,8 @@ const TeamTournament = defineTeamTournament(sequelize, Sequelize.DataTypes);
 const Match = defineMatch(sequelize, Sequelize.DataTypes);
 const MatchEvent = defineMatchEvent(sequelize, Sequelize.DataTypes);
 const Subscription = defineSubscription(sequelize, Sequelize.DataTypes);
+const Notification = defineNotification(sequelize, Sequelize.DataTypes);
+const NotificationPreference = defineNotificationPreference(sequelize, Sequelize.DataTypes);
 
 // Define associations
 const db = {
@@ -37,7 +41,10 @@ const db = {
   Match,
   MatchEvent,
   Subscription,
-  sequelize // Include sequelize instance
+  Notification,
+  NotificationPreference,
+  sequelize, // Include sequelize instance
+  Sequelize // Include Sequelize class for access to operators and other utilities
 };
 
 // Initialize associations (ensure models are defined first)

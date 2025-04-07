@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 /**
  * Validation rules for creating a tournament
@@ -178,4 +178,68 @@ exports.updateTournamentValidation = [
     .isJSON()
     .withMessage('Tournament structure must be valid JSON')
     .customSanitizer(value => JSON.parse(value))
+];
+
+/**
+ * Validation rules for updating team registration status
+ */
+exports.updateTeamRegistrationValidation = [
+  param('id')
+    .isInt()
+    .withMessage('Tournament ID must be an integer'),
+  
+  param('teamId')
+    .isInt()
+    .withMessage('Team ID must be an integer'),
+  
+  body('status')
+    .optional()
+    .isIn(['pending', 'approved', 'rejected', 'withdrawn'])
+    .withMessage('Invalid registration status'),
+  
+  body('group')
+    .optional()
+    .isString()
+    .withMessage('Group must be a string')
+    .trim(),
+  
+  body('notes')
+    .optional()
+    .isString()
+    .withMessage('Notes must be a string')
+    .trim()
+];
+
+/**
+ * Validation rules for updating tournament status
+ */
+exports.updateTournamentStatusValidation = [
+  param('id')
+    .isInt()
+    .withMessage('Tournament ID must be an integer'),
+  
+  body('status')
+    .notEmpty()
+    .withMessage('Status is required')
+    .isIn(['draft', 'published', 'registration-open', 'registration-closed', 'in-progress', 'completed', 'cancelled'])
+    .withMessage('Invalid tournament status')
+];
+
+/**
+ * Validation rules for registering a team for a tournament
+ */
+exports.registerTeamValidation = [
+  param('id')
+    .isInt()
+    .withMessage('Tournament ID must be an integer'),
+  
+  param('teamId')
+    .isInt()
+    .withMessage('Team ID must be an integer'),
+  
+  body('registerNotes')
+    .optional()
+    .isString()
+    .withMessage('Registration notes must be a string')
+    .trim()
 ]; 

@@ -112,6 +112,26 @@ export const AuthProvider = ({ children }) => {
   const clearError = () => {
     setError(null);
   };
+  
+  // Refresh user data after profile updates
+  const refreshUserData = async () => {
+    setLoading(true);
+    try {
+      const response = await authService.getProfile();
+      if (response.status === 'success' && response.data.user) {
+        setUser(response.data.user);
+        // Update localStorage with latest user data
+        localStorage.setItem('userData', JSON.stringify(response.data.user));
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Failed to refresh user data:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const value = {
     user,
@@ -121,6 +141,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     clearError,
+    refreshUserData,
     isAuthenticated: !!user,
   };
 

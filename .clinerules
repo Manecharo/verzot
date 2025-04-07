@@ -1,0 +1,218 @@
+# Verzot Project Rules
+
+## Project Structure Patterns
+
+- The project follows a monorepo structure with separate directories for frontend, backend, and tests
+- Frontend is a React application using React Router for navigation
+- Backend is an Express.js API using Sequelize ORM with PostgreSQL
+- Memory-bank directory contains project documentation
+- Supabase is used for authentication and database storage
+
+## Code Style Patterns
+
+- React components use functional components with hooks
+- Backend follows a layered architecture (controllers, services, models)
+- Frontend uses CSS modules for styling
+- Forms implement client-side validation before submission
+- Internationalization (i18n) is implemented for multilingual support
+
+## Authentication Patterns
+
+- Supabase Auth is used for user authentication
+- AuthContext provides authentication state to the application
+- JWT tokens are stored in localStorage
+- Protected routes redirect unauthenticated users to login
+- Backend uses JWT middleware for route protection and role-based authorization
+- Authorization middleware provides fine-grained role checks (admin, organizer, team owner, referee)
+- The refreshUserData method in AuthContext updates user data after profile changes
+
+## Database Patterns
+
+- Sequelize models define the database schema
+- Models follow clear naming conventions
+- Relationships are defined in model files
+- Connection pooling is used for database connectivity
+- Supabase PostgreSQL is accessed via connection pooler in Session Mode
+- Soft deletion patterns are used for sensitive data (match events use deletedAt field)
+
+## API Integration Patterns
+
+- Frontend services abstract API communication
+- Axios is used for HTTP requests
+- API base URL is configured via environment variables
+- Authentication tokens are managed in API interceptors
+- Error handling is standardized across API calls
+- Backend routes follow RESTful patterns with consistent URL structure
+
+## Notification System Patterns
+
+- NotificationService implements a service-based architecture for creating and delivering notifications
+- Types of notifications include match events, match results, tournament status changes, and team registrations
+- Each notification includes metadata for rich context display in the UI
+- Notifications can be delivered through both in-app and email channels
+- Non-blocking implementation ensures primary operations continue even if notifications fail
+- Priority levels (normal, high, urgent) determine notification prominence
+- Match events like goals and red cards trigger contextual notifications
+- Match status changes notify relevant stakeholders (team leaders, tournament organizer)
+- Match score updates generate notifications with current score details
+- Match result confirmation uses a multi-step workflow with notifications at each step
+- Backend integration points exist in user, match, tournament, and team controllers
+
+### Notification Models and Controllers
+- Notification model stores individual notifications with type, message, read status, and metadata
+- NotificationPreference model stores user preferences for notification delivery
+- Notification controller provides comprehensive CRUD operations for notifications
+- NotificationPreference controller manages user notification settings
+- Controller endpoints follow RESTful patterns with appropriate HTTP methods
+- Notification types are standardized using ENUM in the database model
+- Notification metadata uses JSON fields for flexible, type-specific information
+- Backend routes handle notification operations with appropriate authorization
+
+### Frontend Notification Components
+- Frontend notification system includes multiple components:
+  - NotificationContext manages global notification state and provides hooks for components
+  - NotificationService handles API communication for notification operations
+  - NotificationBadge displays unread count in the header with real-time updates
+  - Notifications page provides filtering, pagination, and management of all notifications
+  - NotificationPreferences page offers granular control over notification settings
+  - NotificationFilters component allows filtering by type and read status
+  - NotificationItem component renders individual notifications with appropriate styling
+  - Toast notifications display real-time alerts for new notifications
+  - ToastContext manages global toast state
+
+### Real-time Notification Features
+- Socket.io integration provides real-time notification updates:
+  - Server emits 'new-notification' events when notifications are created
+  - Client subscribes to user-specific notification channels
+  - Notifications trigger toast alerts based on priority
+  - Match result notifications display score details in toast
+- Notification priorities determine visual treatment:
+  - Normal: Blue color scheme, standard display
+  - High: Orange color scheme, more prominent display
+  - Urgent: Red color scheme, most prominent display
+- Notification badge pulses when new notifications arrive
+- Frontend uses 30-second polling to check for unread notifications
+- Toast notifications auto-dismiss after 5-8 seconds depending on type
+
+### User Notification Preferences
+- NotificationPreference model stores user-specific settings:
+  - Global email notification toggle
+  - Digest frequency setting (realtime, daily, weekly, never)
+  - Per-category toggles (match updates, tournament updates, team updates, system updates)
+  - Individual notification type settings for both in-app and email delivery
+- NotificationPreferences page provides UI for managing these settings:
+  - Toggle switches for enabling/disabling notification categories
+  - Separate toggles for in-app vs. email delivery
+  - Global settings section for email preferences
+  - Detailed descriptions of what each notification type includes
+  - Changes apply immediately when toggles are changed
+  - Mobile-responsive design for all preference controls
+- Email notifications respect user preferences:
+  - Emails only sent if user has enabled email notifications
+  - Digest frequency determines how emails are batched
+  - Each email contains an unsubscribe link for quick opt-out
+  - Unsubscribe functionality works via secure tokens without requiring login
+
+### Notification Management Features
+- Users can mark notifications as read individually or in bulk
+- Notification list supports filtering by type and read status
+- Notifications are paginated with server-side filtering for performance
+- Clear all notifications option with confirmation
+- Delete individual notifications with visual feedback
+- Responsive design ensures usability on mobile devices
+- Notifications page adapts layout based on screen size
+- Notification preferences synced across devices via backend storage
+
+## User Profile Management Patterns
+
+- User profiles include basic information (name, email) and preferences (language)
+- Profile images are stored in Supabase Storage with public URL references
+- Previous profile images are automatically deleted when replaced
+- Profile API supports partial updates via PATCH/PUT methods
+- User statistics aggregate activity data across teams and tournaments
+- User relationships (teams, tournaments) are accessible via dedicated endpoints
+- Password changes require verification of current password
+- Supabase Storage integration enables secure file uploads
+- Activity metrics track user engagement across the platform
+- Profile image upload includes preview and crop functionality
+- AuthContext's refreshUserData method updates user data after profile changes
+- Profile component provides intuitive editing interface with validation
+- Image upload uses Supabase Storage for efficient file management
+- Image URLs are stored in the user model for quick access
+
+## Match Management Patterns
+
+- MatchResults component provides basic match score and status management
+- MatchEventsRecorder component offers enhanced event recording with field position tracking
+- Match events include comprehensive type definitions (goals, cards, substitutions, etc.)
+- Field position coordinates use a normalized system (0,0 to 1,1)
+- Role-based permissions determine who can add, edit, or confirm match events
+- Toggle between simplified and detailed event recording interfaces provides flexibility
+- Backend implements dedicated routes for managing match events with validation
+- Score is automatically updated when goal events are added, updated, or deleted
+- Match status transitions follow a defined workflow (scheduled → in-progress → completed)
+- Confirmation system requires multiple stakeholders to approve match results
+
+## Player Statistics Patterns
+
+- Player statistics are derived from match events recorded during matches
+- TournamentPlayerStats component displays tournament-wide statistics
+- PlayerDetailStats component shows detailed statistics for individual players
+- Player statistics include goals, assists, cards, playing time, and other metrics
+- Statistics are visually presented with both tables and charts for better understanding
+- Navigation to player statistics is available from tournament details
+- Statistics calculation is performed in the TournamentService
+- Responsive design ensures statistics are viewable on all device sizes
+
+## Tournament Brackets Patterns
+
+- TournamentBrackets component provides visual representation of knockout stage matches
+- Brackets support different tournament formats (single elimination, double elimination)
+- Tournament brackets are generated based on completed matches and team progression
+- Bracket visualization is responsive and adapts to different screen sizes
+- Bracket navigation allows users to click on matches to view details
+- Match status is visually indicated in the bracket (scheduled, in-progress, completed)
+- Team advancement is automatically updated based on match results
+- Tournament service provides data transformation for bracket visualization
+- Backend API endpoint retrieves structured data for bracket rendering
+- SVG-based visualization ensures crisp rendering at all screen sizes
+- Tournament details page includes a button to navigate to brackets view
+- Brackets follow a consistent visual language with the rest of the application
+
+## UI Component Patterns
+
+- Visual interfaces (like the soccer field) use SVG or HTML/CSS for interactive elements
+- Complex components offer both simple and detailed modes for different user needs
+- Responsive design ensures usability across mobile, tablet, and desktop devices
+- Consistent styling is applied using the Tournaments.css file for related components
+- Event timelines use grid layouts for consistent alignment and responsive behavior
+
+## Backend API Patterns
+
+- Controllers follow a consistent structure with try-catch blocks and descriptive error messages
+- Middleware handles authentication and role-based authorization
+- Data validation occurs before database operations
+- Response formats are standardized (message property for user feedback, data property for results)
+- Status codes follow HTTP conventions (200 for success, 201 for creation, 400/404 for client errors)
+- Related resources are included in responses when appropriate (eager loading)
+- Soft deletion is used instead of hard deletion for important data that may need recovery
+
+## Development Workflow
+
+- Environment variables are stored in .env files (not committed to Git)
+- Vercel is used for frontend deployment
+- Backend deployment is still pending
+- Database connection issues should be handled as described in database-connection.md
+
+## Feature Implementation Roadmap
+
+- Completed feature: Enhanced match management with detailed events recording
+- Completed feature: Player statistics derived from match events
+- Completed feature: Backend API for match events and match management
+- Completed feature: User profile management with Supabase Storage integration
+- Completed feature: Notification system with in-app and email support
+- Completed feature: Notification preferences management
+- Completed feature: Tournament brackets visualization for knockout stages
+- Completed feature: User profile image upload with preview and cropping
+- Current focus is on backend deployment preparation and comprehensive testing
+- Next priority is improving documentation and preparing for production deployment 
