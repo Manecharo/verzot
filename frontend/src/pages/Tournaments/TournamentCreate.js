@@ -7,6 +7,13 @@ import formStyles from '../../styles/FormStyles.module.css';
 
 const TournamentCreate = () => {
   const { t } = useTranslation();
+  
+  // Helper function to ensure string values from translations
+  const tStr = (key, fallback = '') => {
+    const translation = t(key);
+    return typeof translation === 'string' ? translation : fallback || key;
+  };
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -115,10 +122,10 @@ const TournamentCreate = () => {
         // Redirect to the tournament details page
         navigate(`/tournaments/${response.data.id}`);
       } else {
-        setError(response.message || t('tournaments.createError'));
+        setError(response.message || tStr('tournaments.createError', 'Error creating tournament'));
       }
     } catch (err) {
-      setError(err.message || t('tournaments.createError'));
+      setError(err.message || tStr('tournaments.createError', 'Error creating tournament'));
     } finally {
       setLoading(false);
     }
@@ -141,10 +148,10 @@ const TournamentCreate = () => {
   // Render step 1: Basic Info
   const renderStep1 = () => (
     <div className={formStyles.formSection}>
-      <h2>{t('tournaments.basicInfo')}</h2>
+      <h2>{tStr('tournaments.basicInfo')}</h2>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="name">{t('tournaments.name')} *</label>
+        <label htmlFor="name">{tStr('tournaments.name')} *</label>
         <input
           type="text"
           id="name"
@@ -152,25 +159,25 @@ const TournamentCreate = () => {
           value={formData.name}
           onChange={handleInputChange}
           required
-          placeholder={t('tournaments.namePlaceholder')}
+          placeholder={tStr('tournaments.namePlaceholder')}
         />
       </div>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="description">{t('tournaments.description')}</label>
+        <label htmlFor="description">{tStr('tournaments.description')}</label>
         <textarea
           id="description"
           name="description"
           value={formData.description}
           onChange={handleInputChange}
-          placeholder={t('tournaments.descriptionPlaceholder')}
+          placeholder={tStr('tournaments.descriptionPlaceholder')}
           rows="4"
         />
       </div>
       
       <div className={formStyles.formRow}>
         <div className={formStyles.formGroup}>
-          <label htmlFor="startDate">{t('tournaments.startDate')} *</label>
+          <label htmlFor="startDate">{tStr('tournaments.startDate')} *</label>
           <input
             type="date"
             id="startDate"
@@ -182,7 +189,7 @@ const TournamentCreate = () => {
         </div>
         
         <div className={formStyles.formGroup}>
-          <label htmlFor="endDate">{t('tournaments.endDate')} *</label>
+          <label htmlFor="endDate">{tStr('tournaments.endDate')} *</label>
           <input
             type="date"
             id="endDate"
@@ -195,19 +202,19 @@ const TournamentCreate = () => {
       </div>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="location">{t('tournaments.location')}</label>
+        <label htmlFor="location">{tStr('tournaments.location')}</label>
         <input
           type="text"
           id="location"
           name="location"
           value={formData.location}
           onChange={handleInputChange}
-          placeholder={t('tournaments.locationPlaceholder')}
+          placeholder={tStr('tournaments.locationPlaceholder')}
         />
       </div>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="isPublic">{t('tournaments.visibility')}</label>
+        <label htmlFor="isPublic">{tStr('tournaments.visibility')}</label>
         <div className={formStyles.checkboxGroup}>
           <input
             type="checkbox"
@@ -217,7 +224,7 @@ const TournamentCreate = () => {
             onChange={handleInputChange}
           />
           <label htmlFor="isPublic" className={formStyles.checkboxLabel}>
-            {t('tournaments.makePublic')}
+            {tStr('tournaments.makePublic')}
           </label>
         </div>
       </div>
@@ -227,10 +234,10 @@ const TournamentCreate = () => {
   // Render step 2: Format & Teams
   const renderStep2 = () => (
     <div className={formStyles.formSection}>
-      <h2>{t('tournaments.formatAndTeams')}</h2>
+      <h2>{tStr('tournaments.formatAndTeams')}</h2>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="format">{t('tournaments.format')} *</label>
+        <label htmlFor="format">{tStr('tournaments.format')} *</label>
         <select
           id="format"
           name="format"
@@ -238,17 +245,17 @@ const TournamentCreate = () => {
           onChange={handleInputChange}
           required
         >
-          <option value="11-a-side">{t('tournaments.formats.11')}</option>
-          <option value="8-a-side">{t('tournaments.formats.8')}</option>
-          <option value="7-a-side">{t('tournaments.formats.7')}</option>
-          <option value="5-a-side">{t('tournaments.formats.5')}</option>
-          <option value="penalty-shootout">{t('tournaments.formats.penalty')}</option>
+          <option value="11-a-side">{tStr('tournaments.formats.11')}</option>
+          <option value="8-a-side">{tStr('tournaments.formats.8')}</option>
+          <option value="7-a-side">{tStr('tournaments.formats.7')}</option>
+          <option value="5-a-side">{tStr('tournaments.formats.5')}</option>
+          <option value="penalty-shootout">{tStr('tournaments.formats.penalty')}</option>
         </select>
       </div>
       
       <div className={formStyles.formRow}>
         <div className={formStyles.formGroup}>
-          <label htmlFor="minTeams">{t('tournaments.minTeams')} *</label>
+          <label htmlFor="minTeams">{tStr('tournaments.minTeams')} *</label>
           <input
             type="number"
             id="minTeams"
@@ -261,7 +268,7 @@ const TournamentCreate = () => {
         </div>
         
         <div className={formStyles.formGroup}>
-          <label htmlFor="maxTeams">{t('tournaments.maxTeams')} *</label>
+          <label htmlFor="maxTeams">{tStr('tournaments.maxTeams')} *</label>
           <input
             type="number"
             id="maxTeams"
@@ -276,7 +283,7 @@ const TournamentCreate = () => {
       
       <div className={formStyles.formRow}>
         <div className={formStyles.formGroup}>
-          <label htmlFor="registrationDeadline">{t('tournaments.registrationDeadline')}</label>
+          <label htmlFor="registrationDeadline">{tStr('tournaments.registrationDeadline')}</label>
           <input
             type="date"
             id="registrationDeadline"
@@ -287,7 +294,7 @@ const TournamentCreate = () => {
         </div>
         
         <div className={formStyles.formGroup}>
-          <label htmlFor="rosterLockDate">{t('tournaments.rosterLockDate')}</label>
+          <label htmlFor="rosterLockDate">{tStr('tournaments.rosterLockDate')}</label>
           <input
             type="date"
             id="rosterLockDate"
@@ -299,7 +306,7 @@ const TournamentCreate = () => {
       </div>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="tournamentStructure.format">{t('tournaments.tournamentFormat')} *</label>
+        <label htmlFor="tournamentStructure.format">{tStr('tournaments.tournamentFormat')} *</label>
         <select
           id="tournamentStructure.format"
           name="tournamentStructure.format"
@@ -307,17 +314,17 @@ const TournamentCreate = () => {
           onChange={handleInputChange}
           required
         >
-          <option value="group-knockout">{t('tournaments.tournamentFormats.groupKnockout')}</option>
-          <option value="league">{t('tournaments.tournamentFormats.league')}</option>
-          <option value="knockout">{t('tournaments.tournamentFormats.knockout')}</option>
-          <option value="double-elimination">{t('tournaments.tournamentFormats.doubleElimination')}</option>
+          <option value="group-knockout">{tStr('tournaments.tournamentFormats.groupKnockout')}</option>
+          <option value="league">{tStr('tournaments.tournamentFormats.league')}</option>
+          <option value="knockout">{tStr('tournaments.tournamentFormats.knockout')}</option>
+          <option value="double-elimination">{tStr('tournaments.tournamentFormats.doubleElimination')}</option>
         </select>
       </div>
       
       {formData.tournamentStructure.format === 'group-knockout' && (
         <div className={formStyles.formRow}>
           <div className={formStyles.formGroup}>
-            <label htmlFor="tournamentStructure.groupCount">{t('tournaments.groupCount')}</label>
+            <label htmlFor="tournamentStructure.groupCount">{tStr('tournaments.groupCount')}</label>
             <input
               type="number"
               id="tournamentStructure.groupCount"
@@ -329,7 +336,7 @@ const TournamentCreate = () => {
           </div>
           
           <div className={formStyles.formGroup}>
-            <label htmlFor="tournamentStructure.advancingTeamsCount">{t('tournaments.advancingTeams')}</label>
+            <label htmlFor="tournamentStructure.advancingTeamsCount">{tStr('tournaments.advancingTeams')}</label>
             <input
               type="number"
               id="tournamentStructure.advancingTeamsCount"
@@ -347,10 +354,10 @@ const TournamentCreate = () => {
   // Render step 3: Rules
   const renderStep3 = () => (
     <div className={formStyles.formSection}>
-      <h2>{t('tournaments.rules')}</h2>
+      <h2>{tStr('tournaments.rules')}</h2>
       
       <div className={formStyles.formGroup}>
-        <label htmlFor="rules.matchDuration">{t('tournaments.matchDuration')} (minutes)</label>
+        <label htmlFor="rules.matchDuration">{tStr('tournaments.matchDuration')} (minutes)</label>
         <input
           type="number"
           id="rules.matchDuration"
@@ -363,7 +370,7 @@ const TournamentCreate = () => {
       
       <div className={formStyles.formRow}>
         <div className={formStyles.formGroup}>
-          <label htmlFor="rules.pointsForWin">{t('tournaments.pointsForWin')}</label>
+          <label htmlFor="rules.pointsForWin">{tStr('tournaments.pointsForWin')}</label>
           <input
             type="number"
             id="rules.pointsForWin"
@@ -375,7 +382,7 @@ const TournamentCreate = () => {
         </div>
         
         <div className={formStyles.formGroup}>
-          <label htmlFor="rules.pointsForDraw">{t('tournaments.pointsForDraw')}</label>
+          <label htmlFor="rules.pointsForDraw">{tStr('tournaments.pointsForDraw')}</label>
           <input
             type="number"
             id="rules.pointsForDraw"
@@ -387,7 +394,7 @@ const TournamentCreate = () => {
         </div>
         
         <div className={formStyles.formGroup}>
-          <label htmlFor="rules.pointsForLoss">{t('tournaments.pointsForLoss')}</label>
+          <label htmlFor="rules.pointsForLoss">{tStr('tournaments.pointsForLoss')}</label>
           <input
             type="number"
             id="rules.pointsForLoss"
@@ -400,7 +407,7 @@ const TournamentCreate = () => {
       </div>
       
       <div className={formStyles.formGroup}>
-        <label>{t('tournaments.matchOptions')}</label>
+        <label>{tStr('tournaments.matchOptions')}</label>
         <div className={formStyles.checkboxGroup}>
           <input
             type="checkbox"
@@ -410,7 +417,7 @@ const TournamentCreate = () => {
             onChange={handleInputChange}
           />
           <label htmlFor="rules.substitutesAllowed" className={formStyles.checkboxLabel}>
-            {t('tournaments.substitutesAllowed')}
+            {tStr('tournaments.substitutesAllowed')}
           </label>
         </div>
         
@@ -423,7 +430,7 @@ const TournamentCreate = () => {
             onChange={handleInputChange}
           />
           <label htmlFor="rules.useExtraTime" className={formStyles.checkboxLabel}>
-            {t('tournaments.useExtraTime')}
+            {tStr('tournaments.useExtraTime')}
           </label>
         </div>
         
@@ -436,30 +443,30 @@ const TournamentCreate = () => {
             onChange={handleInputChange}
           />
           <label htmlFor="rules.usePenaltyShootout" className={formStyles.checkboxLabel}>
-            {t('tournaments.usePenaltyShootout')}
+            {tStr('tournaments.usePenaltyShootout')}
           </label>
         </div>
       </div>
       
       <div className={formStyles.formGroup}>
-        <label>{t('tournaments.tiebreakerCriteria')}</label>
-        <p className={formStyles.helpText}>{t('tournaments.tiebreakerHelp')}</p>
+        <label>{tStr('tournaments.tiebreakerCriteria')}</label>
+        <p className={formStyles.helpText}>{tStr('tournaments.tiebreakerHelp')}</p>
         
         {formData.tiebreakerRules.criteria.map((criterion, index) => (
           <div key={index} className={formStyles.formRow}>
             <div className={formStyles.formGroup}>
-              <label htmlFor={`criterion-${index}`}>{t('tournaments.criterion')} {index + 1}</label>
+              <label htmlFor={`criterion-${index}`}>{tStr('tournaments.criterion')} {index + 1}</label>
               <select
                 id={`criterion-${index}`}
                 value={criterion}
                 onChange={(e) => handleCriteriaChange(index, e.target.value)}
               >
-                <option value="points">{t('tournaments.criteria.points')}</option>
-                <option value="headToHead">{t('tournaments.criteria.headToHead')}</option>
-                <option value="goalDifference">{t('tournaments.criteria.goalDifference')}</option>
-                <option value="goalsFor">{t('tournaments.criteria.goalsFor')}</option>
-                <option value="fairPlay">{t('tournaments.criteria.fairPlay')}</option>
-                <option value="random">{t('tournaments.criteria.random')}</option>
+                <option value="points">{tStr('tournaments.criteria.points')}</option>
+                <option value="headToHead">{tStr('tournaments.criteria.headToHead')}</option>
+                <option value="goalDifference">{tStr('tournaments.criteria.goalDifference')}</option>
+                <option value="goalsFor">{tStr('tournaments.criteria.goalsFor')}</option>
+                <option value="fairPlay">{tStr('tournaments.criteria.fairPlay')}</option>
+                <option value="random">{tStr('tournaments.criteria.random')}</option>
               </select>
             </div>
           </div>
@@ -484,19 +491,19 @@ const TournamentCreate = () => {
   
   return (
     <div className={formStyles.formContainer}>
-      <h1 className={formStyles.formTitle}>{t('tournaments.createTournament')}</h1>
+      <h1 className={formStyles.formTitle}>{tStr('tournaments.createTournament')}</h1>
       
       {error && <div className={formStyles.errorMessage}>{error}</div>}
       
       <div className={formStyles.stepIndicator}>
         <div className={`${formStyles.step} ${currentStep >= 1 ? formStyles.active : ''}`}>
-          {t('tournaments.basicInfo')}
+          {tStr('tournaments.basicInfo')}
         </div>
         <div className={`${formStyles.step} ${currentStep >= 2 ? formStyles.active : ''}`}>
-          {t('tournaments.formatAndTeams')}
+          {tStr('tournaments.formatAndTeams')}
         </div>
         <div className={`${formStyles.step} ${currentStep >= 3 ? formStyles.active : ''}`}>
-          {t('tournaments.rules')}
+          {tStr('tournaments.rules')}
         </div>
       </div>
       
@@ -510,7 +517,7 @@ const TournamentCreate = () => {
               className={`${formStyles.button} ${formStyles.secondaryButton}`}
               onClick={prevStep}
             >
-              {t('common.back')}
+              {tStr('common.back')}
             </button>
           )}
           
@@ -521,7 +528,7 @@ const TournamentCreate = () => {
               onClick={nextStep}
               disabled={!validateStep()}
             >
-              {t('common.next')}
+              {tStr('common.next')}
             </button>
           ) : (
             <button
@@ -529,7 +536,7 @@ const TournamentCreate = () => {
               className={`${formStyles.button} ${formStyles.primaryButton}`}
               disabled={loading}
             >
-              {loading ? t('common.creating') : t('tournaments.createTournament')}
+              {loading ? tStr('common.creating') : tStr('tournaments.createTournament')}
             </button>
           )}
         </div>

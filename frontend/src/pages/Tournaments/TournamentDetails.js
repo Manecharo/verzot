@@ -249,7 +249,7 @@ const TournamentDetails = () => {
   const getStatusDisplay = () => {
     const statusKey = tournament.status || 'unknown';
     const statusTranslationKey = `tournaments.statuses.${statusKey}`;
-    const statusText = t(statusTranslationKey, statusKey);
+    const statusText = t(statusTranslationKey, statusKey) || String(statusKey);
     
     const statusMap = {
       'draft': <span className="status-badge draft">{statusText}</span>,

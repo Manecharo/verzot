@@ -8,6 +8,13 @@ import './Players.css';
 
 const PlayerDetail = () => {
   const { t } = useTranslation();
+  
+  // Helper function to ensure string values from translations
+  const tStr = (key, fallback = '') => {
+    const translation = t(key);
+    return typeof translation === 'string' ? translation : fallback || key;
+  };
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   const { playerId } = useParams();
@@ -65,13 +72,13 @@ const PlayerDetail = () => {
                          (teamResponse.data.admins && teamResponse.data.admins.includes(user.id));
             setUserIsTeamAdmin(isAdmin);
           } else {
-            setError(teamResponse.message || t('teams.fetchError'));
+            setError(teamResponse.message || tStr('teams.fetchError', 'Error fetching team data'));
           }
         } else {
-          setError(playerResponse.message || t('players.fetchError'));
+          setError(playerResponse.message || tStr('players.fetchError', 'Error fetching player data'));
         }
       } catch (err) {
-        setError(err.message || t('common.unexpectedError'));
+        setError(err.message || tStr('common.unexpectedError', 'An unexpected error occurred'));
       } finally {
         setLoading(false);
       }
@@ -227,27 +234,27 @@ const PlayerDetail = () => {
     
     return (
       <span className={`player-status ${statusStyles[status] || ''}`}>
-        {t(`players.statuses.${status}`) || status}
+        {tStr(`players.statuses.${status}`, status)}
       </span>
     );
   };
   
   // Loading state
   if (loading && !player) {
-    return <div className="loading-spinner">{t('common.loading')}</div>;
+    return <div className="loading-spinner">{tStr('common.loading')}</div>;
   }
   
   // Error state
   if (error && !player) {
     return (
       <div className="error-container">
-        <h2>{t('common.error')}</h2>
+        <h2>{tStr('common.error')}</h2>
         <p>{error}</p>
         <button
           className={`${formStyles.button} ${formStyles.primaryButton}`}
           onClick={() => navigate(-1)}
         >
-          {t('common.back')}
+          {tStr('common.back')}
         </button>
       </div>
     );
@@ -257,12 +264,12 @@ const PlayerDetail = () => {
   if (!player && !loading) {
     return (
       <div className="not-found-container">
-        <h2>{t('players.notFound')}</h2>
+        <h2>{tStr('players.notFound')}</h2>
         <button
           className={`${formStyles.button} ${formStyles.primaryButton}`}
           onClick={() => navigate('/players')}
         >
-          {t('players.backToList')}
+          {tStr('players.backToList')}
         </button>
       </div>
     );
@@ -277,13 +284,13 @@ const PlayerDetail = () => {
             className="back-button"
             onClick={() => navigate(-1)}
           >
-            ← {t('common.back')}
+            ← {tStr('common.back')}
           </button>
         </div>
         
         <h1>
           {editMode 
-            ? t('players.editPlayer') 
+            ? tStr('players.editPlayer') 
             : `${player.firstName} ${player.lastName}`}
         </h1>
         
@@ -302,12 +309,12 @@ const PlayerDetail = () => {
               className={`${formStyles.button} ${formStyles.secondaryButton}`}
               onClick={() => setEditMode(true)}
             >
-              {t('common.edit')}
+              {tStr('common.edit')}
             </button>
             
             <div className="status-action-dropdown">
               <button className={`${formStyles.button} ${formStyles.dropdownButton}`}>
-                {t('players.changeStatus')} ▾
+                {tStr('players.changeStatus')} ▾
               </button>
               <div className="dropdown-content">
                 {['active', 'inactive', 'suspended', 'pending'].map(status => (
@@ -319,7 +326,7 @@ const PlayerDetail = () => {
                         value: status
                       })}
                     >
-                      {t(`players.statuses.${status}`)}
+                      {tStr(`players.statuses.${status}`)}
                     </button>
                   )
                 ))}
@@ -330,7 +337,7 @@ const PlayerDetail = () => {
                     value: null
                   })}
                 >
-                  {t('players.remove')}
+                  {tStr('players.remove')}
                 </button>
               </div>
             </div>
@@ -347,16 +354,16 @@ const PlayerDetail = () => {
           <div className="confirmation-content">
             <h3>
               {confirmAction.type === 'remove' 
-                ? t('players.confirmRemove')
-                : t('players.confirmStatusChange', {
-                    status: t(`players.statuses.${confirmAction.value}`)
+                ? tStr('players.confirmRemove')
+                : tStr('players.confirmStatusChange', {
+                    status: tStr(`players.statuses.${confirmAction.value}`)
                   })
               }
             </h3>
             <p>
               {confirmAction.type === 'remove'
-                ? t('players.removeWarning')
-                : t('players.statusChangeInfo')
+                ? tStr('players.removeWarning')
+                : tStr('players.statusChangeInfo')
               }
             </p>
             <div className="confirmation-actions">
@@ -364,7 +371,7 @@ const PlayerDetail = () => {
                 className={`${formStyles.button} ${formStyles.cancelButton}`}
                 onClick={() => setConfirmAction(null)}
               >
-                {t('common.cancel')}
+                {tStr('common.cancel')}
               </button>
               <button
                 className={`${formStyles.button} ${formStyles.dangerButton}`}
@@ -375,8 +382,8 @@ const PlayerDetail = () => {
                 }
               >
                 {confirmAction.type === 'remove'
-                  ? t('players.confirmRemoveButton')
-                  : t('common.confirm')
+                  ? tStr('players.confirmRemoveButton')
+                  : tStr('common.confirm')
                 }
               </button>
             </div>
@@ -388,11 +395,11 @@ const PlayerDetail = () => {
       {editMode ? (
         <form onSubmit={handleSubmit} className="player-edit-form">
           <div className={formStyles.formSection}>
-            <h2>{t('players.personalInfo')}</h2>
+            <h2>{tStr('players.personalInfo')}</h2>
             
             <div className={formStyles.formRow}>
               <div className={formStyles.formGroup}>
-                <label htmlFor="firstName">{t('players.firstName')} *</label>
+                <label htmlFor="firstName">{tStr('players.firstName')} *</label>
                 <input
                   type="text"
                   id="firstName"
@@ -404,7 +411,7 @@ const PlayerDetail = () => {
               </div>
               
               <div className={formStyles.formGroup}>
-                <label htmlFor="lastName">{t('players.lastName')} *</label>
+                <label htmlFor="lastName">{tStr('players.lastName')} *</label>
                 <input
                   type="text"
                   id="lastName"
@@ -417,7 +424,7 @@ const PlayerDetail = () => {
             </div>
             
             <div className={formStyles.formGroup}>
-              <label htmlFor="email">{t('players.email')}</label>
+              <label htmlFor="email">{tStr('players.email')}</label>
               <input
                 type="email"
                 id="email"
@@ -429,11 +436,11 @@ const PlayerDetail = () => {
           </div>
           
           <div className={formStyles.formSection}>
-            <h2>{t('players.playingInfo')}</h2>
+            <h2>{tStr('players.playingInfo')}</h2>
             
             <div className={formStyles.formRow}>
               <div className={formStyles.formGroup}>
-                <label htmlFor="jerseyNumber">{t('players.jerseyNumber')}</label>
+                <label htmlFor="jerseyNumber">{tStr('players.jerseyNumber')}</label>
                 <input
                   type="number"
                   id="jerseyNumber"
@@ -446,14 +453,14 @@ const PlayerDetail = () => {
               </div>
               
               <div className={formStyles.formGroup}>
-                <label htmlFor="position">{t('players.position')}</label>
+                <label htmlFor="position">{tStr('players.position')}</label>
                 <select
                   id="position"
                   name="position"
                   value={formData.position}
                   onChange={handleInputChange}
                 >
-                  <option value="">{t('players.selectPositionPlaceholder')}</option>
+                  <option value="">{tStr('players.selectPositionPlaceholder')}</option>
                   {positions.map(pos => (
                     <option key={pos.value} value={pos.value}>
                       {pos.label}
@@ -464,17 +471,17 @@ const PlayerDetail = () => {
             </div>
             
             <div className={formStyles.formGroup}>
-              <label htmlFor="status">{t('players.status')}</label>
+              <label htmlFor="status">{tStr('players.status')}</label>
               <select
                 id="status"
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
               >
-                <option value="active">{t('players.statuses.active')}</option>
-                <option value="inactive">{t('players.statuses.inactive')}</option>
-                <option value="suspended">{t('players.statuses.suspended')}</option>
-                <option value="pending">{t('players.statuses.pending')}</option>
+                <option value="active">{tStr('players.statuses.active')}</option>
+                <option value="inactive">{tStr('players.statuses.inactive')}</option>
+                <option value="suspended">{tStr('players.statuses.suspended')}</option>
+                <option value="pending">{tStr('players.statuses.pending')}</option>
               </select>
             </div>
           </div>
@@ -486,7 +493,7 @@ const PlayerDetail = () => {
               onClick={() => setEditMode(false)}
               disabled={loading}
             >
-              {t('common.cancel')}
+              {tStr('common.cancel')}
             </button>
             
             <button
@@ -494,7 +501,7 @@ const PlayerDetail = () => {
               className={`${formStyles.button} ${formStyles.primaryButton}`}
               disabled={loading}
             >
-              {loading ? t('common.saving') : t('common.save')}
+              {loading ? tStr('common.saving') : tStr('common.save')}
             </button>
           </div>
         </form>
@@ -502,10 +509,10 @@ const PlayerDetail = () => {
         <div className="player-info">
           {/* Basic info */}
           <div className="info-section">
-            <h2>{t('players.personalInfo')}</h2>
+            <h2>{tStr('players.personalInfo')}</h2>
             <div className="info-grid">
               <div className="info-item">
-                <span className="info-label">{t('players.fullName')}</span>
+                <span className="info-label">{tStr('players.fullName')}</span>
                 <span className="info-value">
                   {player.firstName} {player.lastName}
                 </span>
@@ -513,24 +520,24 @@ const PlayerDetail = () => {
               
               {player.email && (
                 <div className="info-item">
-                  <span className="info-label">{t('players.email')}</span>
+                  <span className="info-label">{tStr('players.email')}</span>
                   <span className="info-value">{player.email}</span>
                 </div>
               )}
               
               <div className="info-item">
-                <span className="info-label">{t('players.status')}</span>
+                <span className="info-label">{tStr('players.status')}</span>
                 <span className="info-value">
                   {getStatusDisplay(player.status)}
                 </span>
               </div>
               
               <div className="info-item">
-                <span className="info-label">{t('players.joinedOn')}</span>
+                <span className="info-label">{tStr('players.joinedOn')}</span>
                 <span className="info-value">
                   {player.joinedDate 
                     ? new Date(player.joinedDate).toLocaleDateString() 
-                    : t('common.notAvailable')}
+                    : tStr('common.notAvailable')}
                 </span>
               </div>
             </div>
@@ -538,20 +545,20 @@ const PlayerDetail = () => {
           
           {/* Playing info */}
           <div className="info-section">
-            <h2>{t('players.playingInfo')}</h2>
+            <h2>{tStr('players.playingInfo')}</h2>
             <div className="info-grid">
               {player.jerseyNumber && (
                 <div className="info-item">
-                  <span className="info-label">{t('players.jerseyNumber')}</span>
+                  <span className="info-label">{tStr('players.jerseyNumber')}</span>
                   <span className="info-value jersey-number">{player.jerseyNumber}</span>
                 </div>
               )}
               
               {player.position && (
                 <div className="info-item">
-                  <span className="info-label">{t('players.position')}</span>
+                  <span className="info-label">{tStr('players.position')}</span>
                   <span className="info-value">
-                    {t(`players.positions.${player.position}`) || player.position}
+                    {tStr(`players.positions.${player.position}`, player.position)}
                   </span>
                 </div>
               )}
@@ -560,11 +567,11 @@ const PlayerDetail = () => {
           
           {/* Player stats */}
           <div className="info-section">
-            <h2>{t('players.statistics')}</h2>
+            <h2>{tStr('players.statistics')}</h2>
             <div className="stats-grid">
               {/* This section would display player statistics */}
               <p className="stats-placeholder">
-                {t('players.statsComingSoon')}
+                {tStr('players.statsComingSoon')}
               </p>
             </div>
           </div>

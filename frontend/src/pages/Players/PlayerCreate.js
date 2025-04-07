@@ -8,6 +8,13 @@ import './Players.css';
 
 const PlayerCreate = () => {
   const { t } = useTranslation();
+  
+  // Helper function to ensure string values from translations
+  const tStr = (key, fallback = '') => {
+    const translation = t(key);
+    return typeof translation === 'string' ? translation : fallback || key;
+  };
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   const { teamId } = useParams(); // If navigated from team context
@@ -75,23 +82,23 @@ const PlayerCreate = () => {
     const errors = {};
     
     if (!formData.teamId) {
-      errors.teamId = t('players.teamRequired');
+      errors.teamId = tStr('players.teamRequired', 'Team is required');
     }
     
     if (!formData.firstName.trim()) {
-      errors.firstName = t('players.firstNameRequired');
+      errors.firstName = tStr('players.firstNameRequired', 'First name is required');
     }
     
     if (!formData.lastName.trim()) {
-      errors.lastName = t('players.lastNameRequired');
+      errors.lastName = tStr('players.lastNameRequired', 'Last name is required');
     }
     
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = t('players.invalidEmail');
+      errors.email = tStr('players.invalidEmail', 'Invalid email format');
     }
     
     if (formData.jerseyNumber && (formData.jerseyNumber < 0 || formData.jerseyNumber > 99)) {
-      errors.jerseyNumber = t('players.invalidJerseyNumber');
+      errors.jerseyNumber = tStr('players.invalidJerseyNumber', 'Jersey number must be between 0 and 99');
     }
     
     return errors;
@@ -120,10 +127,10 @@ const PlayerCreate = () => {
         // Navigate to the player details page
         navigate(`/players/${response.data.id}`);
       } else {
-        setError(response.message || t('players.createError'));
+        setError(response.message || tStr('players.createError', 'Error creating player'));
       }
     } catch (err) {
-      setError(err.message || t('common.unexpectedError'));
+      setError(err.message || tStr('common.unexpectedError', 'An unexpected error occurred'));
     } finally {
       setSubmitting(false);
     }
@@ -131,27 +138,27 @@ const PlayerCreate = () => {
   
   // Position options
   const positions = [
-    { value: 'GK', label: t('players.positions.GK') },
-    { value: 'DEF', label: t('players.positions.DEF') },
-    { value: 'MID', label: t('players.positions.MID') },
-    { value: 'FWD', label: t('players.positions.FWD') }
+    { value: 'GK', label: tStr('players.positions.GK') },
+    { value: 'DEF', label: tStr('players.positions.DEF') },
+    { value: 'MID', label: tStr('players.positions.MID') },
+    { value: 'FWD', label: tStr('players.positions.FWD') }
   ];
   
   if (loading) {
-    return <div className="loading-spinner">{t('common.loading')}</div>;
+    return <div className="loading-spinner">{tStr('common.loading')}</div>;
   }
   
   if (teams.length === 0 && !loading) {
     return (
       <div className={formStyles.formContainer}>
-        <h1 className={formStyles.formTitle}>{t('players.createPlayer')}</h1>
+        <h1 className={formStyles.formTitle}>{tStr('players.createPlayer')}</h1>
         <div className="no-teams-message">
-          <p>{t('players.noTeamsToAdd')}</p>
+          <p>{tStr('players.noTeamsToAdd')}</p>
           <button 
             className={`${formStyles.button} ${formStyles.primaryButton}`}
             onClick={() => navigate('/teams/create')}
           >
-            {t('teams.createTeam')}
+            {tStr('teams.createTeam')}
           </button>
         </div>
       </div>
@@ -160,16 +167,16 @@ const PlayerCreate = () => {
   
   return (
     <div className={formStyles.formContainer}>
-      <h1 className={formStyles.formTitle}>{t('players.createPlayer')}</h1>
+      <h1 className={formStyles.formTitle}>{tStr('players.createPlayer')}</h1>
       
       {error && <div className={formStyles.errorMessage}>{error}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className={formStyles.formSection}>
-          <h2>{t('players.teamInfo')}</h2>
+          <h2>{tStr('players.teamInfo')}</h2>
           
           <div className={formStyles.formGroup}>
-            <label htmlFor="teamId">{t('players.selectTeam')} *</label>
+            <label htmlFor="teamId">{tStr('players.selectTeam')} *</label>
             <select
               id="teamId"
               name="teamId"
@@ -179,7 +186,7 @@ const PlayerCreate = () => {
               disabled={!!teamId} // Disable if teamId is provided in URL
             >
               <option value="" disabled>
-                {t('players.selectTeamPlaceholder')}
+                {tStr('players.selectTeamPlaceholder')}
               </option>
               {teams.map(team => (
                 <option key={team.id} value={team.id}>
@@ -191,11 +198,11 @@ const PlayerCreate = () => {
         </div>
         
         <div className={formStyles.formSection}>
-          <h2>{t('players.personalInfo')}</h2>
+          <h2>{tStr('players.personalInfo')}</h2>
           
           <div className={formStyles.formRow}>
             <div className={formStyles.formGroup}>
-              <label htmlFor="firstName">{t('players.firstName')} *</label>
+              <label htmlFor="firstName">{tStr('players.firstName')} *</label>
               <input
                 type="text"
                 id="firstName"
@@ -203,12 +210,12 @@ const PlayerCreate = () => {
                 value={formData.firstName}
                 onChange={handleInputChange}
                 required
-                placeholder={t('players.firstNamePlaceholder')}
+                placeholder={tStr('players.firstNamePlaceholder')}
               />
             </div>
             
             <div className={formStyles.formGroup}>
-              <label htmlFor="lastName">{t('players.lastName')} *</label>
+              <label htmlFor="lastName">{tStr('players.lastName')} *</label>
               <input
                 type="text"
                 id="lastName"
@@ -216,33 +223,33 @@ const PlayerCreate = () => {
                 value={formData.lastName}
                 onChange={handleInputChange}
                 required
-                placeholder={t('players.lastNamePlaceholder')}
+                placeholder={tStr('players.lastNamePlaceholder')}
               />
             </div>
           </div>
           
           <div className={formStyles.formGroup}>
-            <label htmlFor="email">{t('players.email')}</label>
+            <label htmlFor="email">{tStr('players.email')}</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder={t('players.emailPlaceholder')}
+              placeholder={tStr('players.emailPlaceholder')}
             />
             <p className={formStyles.helpText}>
-              {t('players.emailHelp')}
+              {tStr('players.emailHelp')}
             </p>
           </div>
         </div>
         
         <div className={formStyles.formSection}>
-          <h2>{t('players.playingInfo')}</h2>
+          <h2>{tStr('players.playingInfo')}</h2>
           
           <div className={formStyles.formRow}>
             <div className={formStyles.formGroup}>
-              <label htmlFor="jerseyNumber">{t('players.jerseyNumber')}</label>
+              <label htmlFor="jerseyNumber">{tStr('players.jerseyNumber')}</label>
               <input
                 type="number"
                 id="jerseyNumber"
@@ -251,19 +258,19 @@ const PlayerCreate = () => {
                 onChange={handleInputChange}
                 min="0"
                 max="99"
-                placeholder={t('players.jerseyNumberPlaceholder')}
+                placeholder={tStr('players.jerseyNumberPlaceholder')}
               />
             </div>
             
             <div className={formStyles.formGroup}>
-              <label htmlFor="position">{t('players.position')}</label>
+              <label htmlFor="position">{tStr('players.position')}</label>
               <select
                 id="position"
                 name="position"
                 value={formData.position}
                 onChange={handleInputChange}
               >
-                <option value="">{t('players.selectPositionPlaceholder')}</option>
+                <option value="">{tStr('players.selectPositionPlaceholder')}</option>
                 {positions.map(pos => (
                   <option key={pos.value} value={pos.value}>
                     {pos.label}
@@ -274,16 +281,16 @@ const PlayerCreate = () => {
           </div>
           
           <div className={formStyles.formGroup}>
-            <label htmlFor="status">{t('players.initialStatus')}</label>
+            <label htmlFor="status">{tStr('players.initialStatus')}</label>
             <select
               id="status"
               name="status"
               value={formData.status}
               onChange={handleInputChange}
             >
-              <option value="active">{t('players.statuses.active')}</option>
-              <option value="inactive">{t('players.statuses.inactive')}</option>
-              <option value="pending">{t('players.statuses.pending')}</option>
+              <option value="active">{tStr('players.statuses.active')}</option>
+              <option value="inactive">{tStr('players.statuses.inactive')}</option>
+              <option value="pending">{tStr('players.statuses.pending')}</option>
             </select>
           </div>
         </div>
@@ -294,7 +301,7 @@ const PlayerCreate = () => {
             className={`${formStyles.button} ${formStyles.cancelButton}`}
             onClick={() => navigate(-1)}
           >
-            {t('common.cancel')}
+            {tStr('common.cancel')}
           </button>
           
           <button
@@ -302,7 +309,7 @@ const PlayerCreate = () => {
             className={`${formStyles.button} ${formStyles.primaryButton}`}
             disabled={submitting}
           >
-            {submitting ? t('common.creating') : t('players.createPlayer')}
+            {submitting ? tStr('common.creating') : tStr('players.createPlayer')}
           </button>
         </div>
       </form>

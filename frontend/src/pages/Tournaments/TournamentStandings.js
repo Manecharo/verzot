@@ -208,7 +208,7 @@ const StandingsTable = ({ standings, format, selectedGroup }) => {
             <tr key={team.teamId} className={index < 2 ? 'qualification-position' : ''}>
               <td className="position-column">{index + 1}</td>
               <td className="team-column">
-                <span className="team-name">{team.teamName}</span>
+                <span className="team-name">{team.teamName || t('tournaments.tbd')}</span>
               </td>
               <td>{team.played}</td>
               <td>{team.won}</td>
