@@ -247,17 +247,21 @@ const TournamentDetails = () => {
   
   // Get status display
   const getStatusDisplay = () => {
+    const statusKey = tournament.status || 'unknown';
+    const statusTranslationKey = `tournaments.statuses.${statusKey}`;
+    const statusText = t(statusTranslationKey, statusKey);
+    
     const statusMap = {
-      'draft': <span className="status-badge draft">{t('tournaments.statuses.draft')}</span>,
-      'published': <span className="status-badge published">{t('tournaments.statuses.published')}</span>,
-      'registration-open': <span className="status-badge registration-open">{t('tournaments.statuses.registration-open')}</span>,
-      'registration-closed': <span className="status-badge registration-closed">{t('tournaments.statuses.registration-closed')}</span>,
-      'in-progress': <span className="status-badge in-progress">{t('tournaments.statuses.in-progress')}</span>,
-      'completed': <span className="status-badge completed">{t('tournaments.statuses.completed')}</span>,
-      'cancelled': <span className="status-badge cancelled">{t('tournaments.statuses.cancelled')}</span>
+      'draft': <span className="status-badge draft">{statusText}</span>,
+      'published': <span className="status-badge published">{statusText}</span>,
+      'registration-open': <span className="status-badge registration-open">{statusText}</span>,
+      'registration-closed': <span className="status-badge registration-closed">{statusText}</span>,
+      'in-progress': <span className="status-badge in-progress">{statusText}</span>,
+      'completed': <span className="status-badge completed">{statusText}</span>,
+      'cancelled': <span className="status-badge cancelled">{statusText}</span>,
     };
     
-    return statusMap[tournament.status] || tournament.status;
+    return statusMap[statusKey] || <span className="status-badge">{String(statusKey)}</span>;
   };
   
   return (

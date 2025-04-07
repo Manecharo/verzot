@@ -255,11 +255,11 @@ const KnockoutBracket = ({ standings }) => {
             {round.matches.map((match, matchIndex) => (
               <div key={`match-${roundIndex}-${matchIndex}`} className="bracket-match">
                 <div className={`bracket-team ${match.homeScore > match.awayScore ? 'winner' : ''}`}>
-                  <span className="team-name">{match.homeTeam.name}</span>
+                  <span className="team-name">{match.homeTeam?.name || t('tournaments.tbd')}</span>
                   <span className="team-score">{match.status === 'completed' ? match.homeScore : '-'}</span>
                 </div>
                 <div className={`bracket-team ${match.homeScore < match.awayScore ? 'winner' : ''}`}>
-                  <span className="team-name">{match.awayTeam.name}</span>
+                  <span className="team-name">{match.awayTeam?.name || t('tournaments.tbd')}</span>
                   <span className="team-score">{match.status === 'completed' ? match.awayScore : '-'}</span>
                 </div>
                 {match.hasPenalties && (

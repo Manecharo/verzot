@@ -153,7 +153,7 @@ const TeamCreate = () => {
               onChange={handleInputChange}
               placeholder={t('teams.logoUrlPlaceholder')}
             />
-            <p className={formStyles.helpText}>{t('teams.logoHelp')}</p>
+            <p className={formStyles.helpText}>{t('teams.logoHelp') || ''}</p>
           </div>
           
           <div className={formStyles.formRow}>
@@ -201,7 +201,7 @@ const TeamCreate = () => {
           </div>
           
           <div className={formStyles.previewContainer}>
-            <div className={formStyles.previewHeader}>{t('teams.preview')}</div>
+            <div className={formStyles.previewHeader}>{t('teams.preview') || 'Preview'}</div>
             <div 
               className={formStyles.previewContent}
               style={{
@@ -209,12 +209,12 @@ const TeamCreate = () => {
                 color: formData.colors.secondary
               }}
             >
-              <div className={formStyles.previewName}>{formData.name || t('teams.teamName')}</div>
+              <div className={formStyles.previewName}>{formData.name || t('teams.teamName') || 'Team Name'}</div>
               {formData.logoUrl && (
                 <div>
                   <img 
                     src={formData.logoUrl} 
-                    alt={formData.name} 
+                    alt={formData.name || 'Team logo'} 
                     style={{ maxWidth: '100px', maxHeight: '100px', marginTop: '10px' }}
                   />
                 </div>
