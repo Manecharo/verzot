@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useSafeTranslation } from '../../utils/safeTranslation';
 import { useAuth } from '../../context/AuthContext';
@@ -6,10 +6,29 @@ import NotificationBadge from '../Notifications/NotificationBadge';
 import './Header.css';
 
 const Header = () => {
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Add debugging for translation keys
+  useEffect(() => {
+    console.log('Current language:', i18n.language);
+    console.log('Translation values for menu items:', {
+      tournaments: t('tournaments'),
+      teams: t('teams'),
+      players: t('players'),
+      dashboard: t('dashboard'),
+      profile: t('profile'),
+      logout: t('logout'),
+      login: t('login'),
+      register: t('register')
+    });
+    
+    // Check if translation resources are loaded
+    console.log('Resources loaded:', i18n.hasResourceBundle(i18n.language, 'translation'));
+    console.log('Translation namespace exists:', i18n.exists('tournaments'));
+  }, [t, i18n]);
 
   const handleLogout = () => {
     logout();

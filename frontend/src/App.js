@@ -37,6 +37,8 @@ const Profile = React.lazy(() => import('./pages/Profile/Profile'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 const Notifications = React.lazy(() => import('./pages/Notifications/Notifications'));
 const NotificationPreferences = React.lazy(() => import('./pages/Notifications/NotificationPreferences'));
+// Add API Tester
+const ApiTester = React.lazy(() => import('./pages/DevTools/ApiTester'));
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -222,6 +224,16 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <NotificationPreferences />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* API Testing Tool */}
+          <Route 
+            path="/dev/api-tester" 
+            element={
+              <ProtectedRoute>
+                <ApiTester />
               </ProtectedRoute>
             } 
           />

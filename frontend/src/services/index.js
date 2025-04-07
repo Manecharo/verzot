@@ -1,13 +1,16 @@
+import api from './api';
 import authService from './authService';
+import teamService from './teamService';
 import tournamentService from './tournamentService';
 import playerService from './playerService';
-import teamService from './teamService';
-import notificationService from './notification.service';
+import notificationService from './notificationService';
 
+// Export all services
 export {
+  api,
   authService,
+  teamService,
   tournamentService,
   playerService,
-  teamService,
   notificationService
 }; 
