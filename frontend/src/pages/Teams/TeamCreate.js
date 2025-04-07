@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from '../../utils/safeTranslation';
+import { toSafeString } from '../../utils/translationHelper';
 import { useAuth } from '../../context/AuthContext';
 import { teamService } from '../../services';
 import formStyles from '../../styles/FormStyles.module.css';
 
 const TeamCreate = () => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -201,7 +202,7 @@ const TeamCreate = () => {
           </div>
           
           <div className={formStyles.previewContainer}>
-            <div className={formStyles.previewHeader}>{t('teams.preview') || 'Preview'}</div>
+            <div className={formStyles.previewHeader}>{toSafeString(t('teams.preview'), 'Preview')}</div>
             <div 
               className={formStyles.previewContent}
               style={{
@@ -209,7 +210,9 @@ const TeamCreate = () => {
                 color: formData.colors.secondary
               }}
             >
-              <div className={formStyles.previewName}>{formData.name || t('teams.teamName') || 'Team Name'}</div>
+              <div className={formStyles.previewName}>
+                {formData.name || toSafeString(t('teams.teamName'), 'Team Name')}
+              </div>
               {formData.logoUrl && (
                 <div>
                   <img 

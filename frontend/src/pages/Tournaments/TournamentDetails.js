@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from '../../utils/safeTranslation';
 import { useAuth } from '../../context/AuthContext';
 import { tournamentService, teamService } from '../../services';
 import formStyles from '../../styles/FormStyles.module.css';
 import './Tournaments.css';
 
 const TournamentDetails = () => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();

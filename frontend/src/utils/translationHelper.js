@@ -1,4 +1,66 @@
 /**
+ * Safely converts a translation result to a string, handling all edge cases
+ * that might cause "Objects are not valid as React children" errors
+ * 
+ * @param {any} value - The translation result to convert to string
+ * @param {string} fallback - Fallback value if the translation is an object
+ * @returns {string} - A safe string value
+ */
+export const toSafeString = (value, fallback = '') => {
+  // Handle null/undefined
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+  
+  // Handle objects (including translations with nested data)
+  if (typeof value === 'object') {
+    // For React Error #31 prevention, never return objects
+    return fallback;
+  }
+  
+  // Handle numbers, booleans, etc.
+  return String(value);
+};
+
+/**
+ * Global safeguard for all translation outputs
+ * This can be applied to i18next to globally prevent React Error #31
+ * 
+ * @param {Function} t - Original translation function
+ * @returns {Function} - Safe translation function
+ */
+export const createSafeTranslator = (originalTranslate) => {
+  return function safeTFunction(key, options = {}) {
+    if (!key || typeof key !== 'string') {
+      return '';
+    }
+    
+    try {
+      const result = originalTranslate(key, options);
+      
+      // Always return a string, never an object
+      if (result === null || result === undefined) {
+        return options.defaultValue || key;
+      }
+      
+      if (typeof result === 'object') {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`[i18n] Translation key "${key}" returned an object instead of a string:`, result);
+        }
+        return options.defaultValue || key;
+      }
+      
+      return String(result);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`[i18n] Error translating key "${key}":`, error);
+      }
+      return options.defaultValue || key;
+    }
+  };
+};
+
+/**
  * Translation debugging utility
  * 
  * This utility can help identify missing translations or issues with translation keys
@@ -43,5 +105,6 @@ export const logMissingTranslation = (i18n, key) => {
  */
 export const safeTranslate = (t, i18n, key, options = {}) => {
   logMissingTranslation(i18n, key);
-  return t(key, options);
+  const translation = t(key, options);
+  return toSafeString(translation, key);
 }; 

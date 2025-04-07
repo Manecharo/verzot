@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from '../../utils/safeTranslation';
 import { tournamentService } from '../../services';
 import { useAuth } from '../../context/AuthContext';
 import './Tournaments.css';
 
 const TournamentStandings = () => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const { tournamentId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -176,7 +176,7 @@ const TournamentStandings = () => {
 };
 
 const StandingsTable = ({ standings, format, selectedGroup }) => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   
   if (!standings || standings.length === 0) {
     return (
@@ -236,7 +236,7 @@ const StandingsTable = ({ standings, format, selectedGroup }) => {
 };
 
 const KnockoutBracket = ({ standings }) => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   
   if (!standings || !standings.rounds || standings.rounds.length === 0) {
     return (
