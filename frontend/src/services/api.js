@@ -3,7 +3,7 @@ import authHeader from './auth-header';
 
 // Create a base API instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
+  baseURL: process.env.REACT_APP_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json'
   }

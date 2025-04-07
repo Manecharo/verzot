@@ -1,7 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+// For Vercel deployment, use the appropriate API URL
+// If REACT_APP_API_URL is not set, it will use relative path which works in both environments
+const API_URL = process.env.REACT_APP_API_URL || "/api";
 
 class NotificationService {
   // Get all notifications with optional filters

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from '../../utils/safeTranslation';
 import { useAuth } from '../../context/AuthContext';
 import NotificationBadge from '../Notifications/NotificationBadge';
 import './Header.css';
 
 const Header = () => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
