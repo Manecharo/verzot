@@ -257,7 +257,7 @@ exports.getUserTeams = async (req, res) => {
 
     // Get teams owned by the user
     const teams = await Team.findAll({
-      where: { ownerId: userId },
+      where: { teamLeaderId: userId },
       include: [
         {
           model: Tournament,
@@ -312,7 +312,7 @@ exports.getUserTournaments = async (req, res) => {
 
     // Get tournaments where user has a team participating
     const teams = await Team.findAll({
-      where: { ownerId: userId },
+      where: { teamLeaderId: userId },
       include: [
         {
           model: Tournament,
@@ -368,11 +368,11 @@ exports.getUserStatistics = async (req, res) => {
     }
 
     // Get counts of different entities
-    const teamsCount = await Team.count({ where: { ownerId: userId } });
+    const teamsCount = await Team.count({ where: { teamLeaderId: userId } });
     const tournamentsCount = await Tournament.count({ where: { organizerId: userId } });
     
     // Get teams owned by user
-    const teams = await Team.findAll({ where: { ownerId: userId } });
+    const teams = await Team.findAll({ where: { teamLeaderId: userId } });
     const teamIds = teams.map(team => team.id);
     
     // Get counts of matches for user's teams

@@ -30,7 +30,7 @@ const teamController = {
       }
       
       if (userId) {
-        whereClause.ownerId = userId;
+        whereClause.teamLeaderId = userId;
       }
       
       const teams = await Team.findAll({
@@ -38,7 +38,7 @@ const teamController = {
         include: [
           {
             model: User,
-            as: 'owner',
+            as: 'TeamLeader',
             attributes: ['id', 'username', 'email']
           }
         ],
@@ -65,7 +65,7 @@ const teamController = {
         include: [
           {
             model: User,
-            as: 'owner',
+            as: 'TeamLeader',
             attributes: ['id', 'username', 'email']
           },
           {
@@ -110,7 +110,7 @@ const teamController = {
         logoUrl,
         primaryColor,
         secondaryColor,
-        ownerId: req.user.id // From JWT middleware
+        teamLeaderId: req.user.id // From JWT middleware
       });
       
       res.status(201).json({

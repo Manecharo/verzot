@@ -83,6 +83,63 @@ const notificationController = {
       res.status(500).json({ message: 'Failed to fetch unread count', error: error.message });
     }
   },
+
+  /**
+   * Create a notification (basic implementation)
+   * @param {Object} req
+   * @param {Object} res
+   */
+  createNotification: async (req, res) => {
+    try {
+      const { userId, type, title, message, metadata } = req.body;
+
+      if (!userId || !type || !title || !message) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      const notification = await Notification.create({
+        userId,
+        type,
+        title,
+        message,
+        metadata: metadata || {},
+        priority: 'normal'
+      });
+
+      res.status(201).json({ notification });
+    } catch (error) {
+      console.error('Error creating notification:', error);
+      res.status(500).json({ message: 'Failed to create notification', error: error.message });
+    }
+  },
+
+  /**
+   * Delete multiple notifications by IDs
+   * @param {Object} req
+   * @param {Object} res
+   */
+  deleteNotifications: async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { ids } = req.body;
+
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ message: 'No notification IDs provided' });
+      }
+
+      const deleted = await Notification.destroy({
+        where: {
+          id: { [Op.in]: ids },
+          userId
+        }
+      });
+
+      res.status(200).json({ message: 'Notifications deleted', count: deleted });
+    } catch (error) {
+      console.error('Error deleting notifications:', error);
+      res.status(500).json({ message: 'Failed to delete notifications', error: error.message });
+    }
+  },
   
   /**
    * Mark a notification as read
