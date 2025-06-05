@@ -23,8 +23,8 @@ const notificationController = {
       // Parse filter parameters
       const filters = {};
       
-      if (req.query.read !== undefined) {
-        filters.read = req.query.read === 'true';
+      if (req.query.isRead !== undefined) {
+        filters.isRead = req.query.isRead === 'true';
       }
       
       if (req.query.type) {
@@ -72,7 +72,7 @@ const notificationController = {
       const count = await Notification.count({
         where: {
           userId,
-          read: false
+          isRead: false
         }
       });
       
@@ -140,6 +140,38 @@ const notificationController = {
       res.status(500).json({ message: 'Failed to delete notifications', error: error.message });
     }
   },
+
+  /**
+   * Mark multiple notifications as read
+   * @param {Object} req
+   * @param {Object} res
+   */
+  markNotificationsAsRead: async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { ids } = req.body;
+
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ message: 'No notification IDs provided' });
+      }
+
+      const [updatedCount] = await Notification.update(
+        { isRead: true, readAt: new Date() },
+        {
+          where: {
+            id: { [Op.in]: ids },
+            userId,
+            isRead: false
+          }
+        }
+      );
+
+      res.status(200).json({ message: 'Notifications marked as read', count: updatedCount });
+    } catch (error) {
+      console.error('Error marking notifications as read:', error);
+      res.status(500).json({ message: 'Failed to mark notifications as read', error: error.message });
+    }
+  },
   
   /**
    * Mark a notification as read
@@ -164,7 +196,7 @@ const notificationController = {
       }
       
       // Update the notification
-      await notification.update({ read: true, readAt: new Date() });
+      await notification.update({ isRead: true, readAt: new Date() });
       
       // Return success response
       res.status(200).json({
@@ -188,11 +220,11 @@ const notificationController = {
       
       // Update all unread notifications for the user
       const [updatedCount] = await Notification.update(
-        { read: true, readAt: new Date() },
+        { isRead: true, readAt: new Date() },
         {
           where: {
             userId,
-            read: false
+            isRead: false
           }
         }
       );

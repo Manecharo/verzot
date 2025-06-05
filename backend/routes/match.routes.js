@@ -64,34 +64,6 @@ router.put('/:id/status', [middleware.hasRoles(['admin', 'organizer', 'referee']
 router.post('/:id/confirm', [middleware.hasRoles(['admin', 'organizer', 'referee', 'team_leader'])], matchController.confirmMatchResult);
 
 /**
- * @route GET /api/v1/matches/:id/events
- * @desc Get match events
- * @access Private
- */
-router.get('/:id/events', matchController.getMatchEvents);
-
-/**
- * @route POST /api/v1/matches/:id/events
- * @desc Add match event
- * @access Private (Tournament Organizer or Referee)
- */
-router.post('/:id/events', [middleware.hasRoles(['admin', 'organizer', 'referee'])], matchController.addMatchEvent);
-
-/**
- * @route PUT /api/v1/matches/:id/events/:eventId
- * @desc Update match event
- * @access Private (Tournament Organizer or Referee)
- */
-router.put('/:id/events/:eventId', [middleware.hasRoles(['admin', 'organizer', 'referee'])], matchController.updateMatchEvent);
-
-/**
- * @route DELETE /api/v1/matches/:id/events/:eventId
- * @desc Delete match event
- * @access Private (Tournament Organizer or Referee)
- */
-router.delete('/:id/events/:eventId', [middleware.hasRoles(['admin', 'organizer', 'referee'])], matchController.deleteMatchEvent);
-
-/**
  * Match Event routes
  */
 

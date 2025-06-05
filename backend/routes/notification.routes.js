@@ -42,7 +42,7 @@ router.post(
  * @desc    Mark specific notifications as read
  * @access  Private
  */
-router.put('/mark-read', notificationController.markAsRead);
+router.put('/mark-read', notificationController.markNotificationsAsRead);
 
 /**
  * @route   PUT /api/v1/notifications/mark-all-read
