@@ -37,7 +37,6 @@
   "auth": {
     "loginTitle": "Welcome back",
     "registerTitle": "Create an account",
-    "register_title": "Create an account",
     "register_subtitle": "Join Verzot to start organizing tournaments",
     "email": "Email",
     "emailRequired": "Email is required",
