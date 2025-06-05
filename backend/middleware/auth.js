@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const { User, Role } = require('../models');
+const { User, Role, Team, Tournament } = require('../models');
 
 /**
  * Middleware to authenticate JWT token
  */
-exports.verifyToken = (req, res, next) => {
+exports.verifyToken = async (req, res, next) => {
   // Get token from Authorization header
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
@@ -16,20 +16,44 @@ exports.verifyToken = (req, res, next) => {
     });
   }
 
-  // Verify token
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // decoded payload structure is { user: { id: ... } }
+    const userId = decoded && decoded.user ? decoded.user.id : undefined;
+
+    if (!userId) {
       return res.status(401).json({
         status: 'error',
-        message: 'Unauthorized',
-        error: err.message
+        message: 'Invalid token payload'
       });
     }
 
     // Set user ID in request
-    req.user = { id: decoded.id };
+    req.user = { id: userId };
+    req.userId = userId; // backwards compatibility for controllers expecting userId
+
+    // Load user roles for convenience in downstream controllers
+    const user = await User.findByPk(userId, {
+      include: [{ model: Role, through: { attributes: [] } }]
+    });
+
+    if (user) {
+      const roles = user.Roles.map(r => r.name);
+      req.userRoles = roles;
+      if (roles.length > 0) {
+        req.userRole = roles[0];
+      }
+    }
+
     next();
-  });
+  } catch (err) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Unauthorized',
+      error: err.message
+    });
+  }
 };
 
 /**
@@ -103,9 +127,9 @@ exports.isResourceOwner = (resourceType) => {
       
       switch (resourceType) {
         case 'team':
-          // Check if user is the team owner
+          // Check if user is the team leader
           const team = await Team.findByPk(resourceId);
-          isOwner = team && team.ownerId === userId;
+          isOwner = team && team.teamLeaderId === userId;
           break;
         
         case 'tournament':

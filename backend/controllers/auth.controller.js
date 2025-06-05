@@ -215,4 +215,59 @@ exports.getProfile = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-}; 
+};
+
+/**
+ * Refresh JWT access token
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+exports.refreshToken = async (req, res) => {
+  try {
+    const token = req.body.refreshToken || req.cookies?.refreshToken;
+
+    if (!token) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'No refresh token provided'
+      });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Invalid refresh token'
+      });
+    }
+
+    const user = await User.findByPk(decoded.user.id);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'User not found'
+      });
+    }
+
+    const payload = { user: { id: user.id } };
+    const newToken = jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: parseInt(process.env.JWT_EXPIRATION) || 86400 }
+    );
+
+    res.json({
+      status: 'success',
+      token: newToken
+    });
+  } catch (error) {
+    console.error('Refresh token error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error during token refresh',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};

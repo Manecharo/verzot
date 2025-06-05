@@ -121,8 +121,8 @@ const playerController = {
           return res.status(404).json({ message: 'Team not found' });
         }
         
-        // Check if team owner is current user or user is admin
-        if (team.ownerId !== req.userId && req.userRole !== 'admin') {
+        // Check if team leader is current user or user is admin
+        if (team.teamLeaderId !== req.userId && req.userRole !== 'admin') {
           return res.status(403).json({ message: 'You are not authorized to add players to this team' });
         }
         
@@ -197,8 +197,8 @@ const playerController = {
           return res.status(404).json({ message: 'Team not found' });
         }
         
-        // Check if team owner is current user or user is admin
-        if (team.ownerId !== req.userId && req.userRole !== 'admin') {
+        // Check if team leader is current user or user is admin
+        if (team.teamLeaderId !== req.userId && req.userRole !== 'admin') {
           return res.status(403).json({ message: 'You are not authorized to add players to this team' });
         }
         

@@ -47,7 +47,7 @@ router.delete('/:id', [middleware.hasRoles(['admin', 'organizer'])], matchContro
  * @desc Update match result
  * @access Private (Tournament Organizer or Referee)
  */
-router.put('/:id/result', [middleware.hasRoles(['admin', 'organizer', 'referee'])], matchController.updateMatchResult);
+router.put('/:id/result', [middleware.hasRoles(['admin', 'organizer', 'referee'])], matchController.updateMatchScore);
 
 /**
  * @route PUT /api/v1/matches/:id/status

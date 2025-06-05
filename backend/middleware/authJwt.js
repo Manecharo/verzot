@@ -158,7 +158,7 @@ const isTournamentOrganizer = async (req, res, next) => {
     }
     
     // Check if user is the tournament organizer
-    if (tournament.ownerId === req.userId) {
+    if (tournament.organizerId === req.userId) {
       return next();
     }
     
@@ -274,7 +274,7 @@ const isTournamentOrganizerOrReferee = async (req, res, next) => {
     }
     
     // Check if user is the tournament organizer
-    if (tournament.ownerId === req.userId) {
+    if (tournament.organizerId === req.userId) {
       return next();
     }
     
@@ -369,8 +369,8 @@ const isTeamOwnerOrAdmin = async (req, res, next) => {
       });
     }
     
-    // Check if user is the team owner
-    if (team.ownerId === req.userId) {
+    // Check if user is the team leader
+    if (team.teamLeaderId === req.userId) {
       return next();
     }
     
@@ -443,7 +443,7 @@ const isTeamLeaderOrganizerOrReferee = async (req, res, next) => {
     }
     
     // Check tournament organizer
-    if (match.tournament.ownerId === req.userId) {
+    if (match.tournament.organizerId === req.userId) {
       return next();
     }
     
@@ -462,7 +462,7 @@ const isTeamLeaderOrganizerOrReferee = async (req, res, next) => {
         });
       }
       
-      if (team.ownerId === req.userId) {
+      if (team.teamLeaderId === req.userId) {
         return next();
       }
       
@@ -520,7 +520,7 @@ const isTeamLeaderOrganizerOrReferee = async (req, res, next) => {
     
     // Check if organizer role
     if (role === 'organizer') {
-      if (match.tournament.ownerId === req.userId) {
+      if (match.tournament.organizerId === req.userId) {
         return next();
       }
       

@@ -118,7 +118,7 @@ const matchController = {
           {
             model: Tournament,
             as: 'tournament',
-            attributes: ['id', 'name', 'ownerId', 'format']
+            attributes: ['id', 'name', 'organizerId', 'format']
           },
           {
             model: MatchEvent,
@@ -345,7 +345,7 @@ const matchController = {
           {
             model: Team,
             as: 'homeTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -357,7 +357,7 @@ const matchController = {
           {
             model: Team,
             as: 'awayTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -471,7 +471,7 @@ const matchController = {
           {
             model: Team,
             as: 'homeTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -483,7 +483,7 @@ const matchController = {
           {
             model: Team,
             as: 'awayTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -617,12 +617,12 @@ const matchController = {
           {
             model: Tournament,
             as: 'tournament',
-            attributes: ['id', 'name', 'ownerId']
+            attributes: ['id', 'name', 'organizerId']
           },
           {
             model: Team,
             as: 'homeTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -634,7 +634,7 @@ const matchController = {
           {
             model: Team,
             as: 'awayTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -661,7 +661,7 @@ const matchController = {
       switch (role) {
         case 'home':
           // Check if user is authorized to confirm for home team
-          if (match.homeTeam && match.homeTeam.ownerId !== req.userId && req.userRole !== 'admin') {
+          if (match.homeTeam && match.homeTeam.teamLeaderId !== req.userId && req.userRole !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to confirm for the home team' });
           }
           updateFields.confirmedByHomeTeam = true;
@@ -669,7 +669,7 @@ const matchController = {
           break;
         case 'away':
           // Check if user is authorized to confirm for away team
-          if (match.awayTeam && match.awayTeam.ownerId !== req.userId && req.userRole !== 'admin') {
+          if (match.awayTeam && match.awayTeam.teamLeaderId !== req.userId && req.userRole !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to confirm for the away team' });
           }
           updateFields.confirmedByAwayTeam = true;
@@ -685,7 +685,7 @@ const matchController = {
           break;
         case 'organizer':
           // Check if user is the tournament organizer or admin
-          if (match.tournament && match.tournament.ownerId !== req.userId && req.userRole !== 'admin') {
+          if (match.tournament && match.tournament.organizerId !== req.userId && req.userRole !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to confirm as organizer' });
           }
           // Organizer can confirm all at once
@@ -778,9 +778,9 @@ const matchController = {
           }
           
           // Always notify tournament organizer
-          if (match.tournament && match.tournament.ownerId) {
+          if (match.tournament && match.tournament.organizerId) {
             notifyTargets.push({
-              userId: match.tournament.ownerId,
+              userId: match.tournament.organizerId,
               teamRole: 'tournament organizer'
             });
           }
@@ -843,9 +843,9 @@ const matchController = {
           }
           
           // Notify tournament organizer
-          if (match.tournament && match.tournament.ownerId) {
+          if (match.tournament && match.tournament.organizerId) {
             await NotificationService.createNotification({
-              userId: match.tournament.ownerId,
+              userId: match.tournament.organizerId,
               type: 'match_result_final',
               title: 'Match Result Finalized',
               message: `The result of ${match.homeTeam.name} vs ${match.awayTeam.name} (${match.homeScore}-${match.awayScore}) has been finalized.`,
@@ -941,7 +941,7 @@ const matchController = {
           {
             model: Team,
             as: 'homeTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -953,7 +953,7 @@ const matchController = {
           {
             model: Team,
             as: 'awayTeam',
-            attributes: ['id', 'name', 'ownerId'],
+            attributes: ['id', 'name', 'teamLeaderId'],
             include: [
               {
                 model: User,
@@ -1004,7 +1004,7 @@ const matchController = {
       // Check if team exists
       if (teamId) {
         team = await Team.findByPk(teamId, {
-          attributes: ['id', 'name', 'ownerId']
+          attributes: ['id', 'name', 'teamLeaderId']
         });
         if (!team) {
           return res.status(404).json({ message: 'Team not found' });
